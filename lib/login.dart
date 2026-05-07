@@ -1,3 +1,4 @@
+import 'package:dispensary/homepage.dart';
 import 'package:dispensary/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
@@ -60,7 +61,10 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                  MaterialButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=>Homepage()));
+                    },
                     minWidth: double.infinity,
                     height: 50,
                     shape: RoundedRectangleBorder(
