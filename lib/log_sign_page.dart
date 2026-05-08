@@ -37,8 +37,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                   // زر تسجبل الدخول
                   MaterialButton(
                     onPressed:(){
-                      Navigator.push(
-                        context,
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => Login(),
                         ),
@@ -64,8 +63,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                   //زر اضافة الايميل و كلمة المرور
                   MaterialButton(
                     onPressed:(){
-                      Navigator.push(
-                        context,
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => SignUpPage(),
                         ),

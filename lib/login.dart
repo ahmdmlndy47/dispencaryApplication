@@ -62,7 +62,7 @@ class _LoginState extends State<Login> {
                 ),
                  MaterialButton(
                     onPressed: (){
-                      Navigator.push(context,
+                      Navigator.of(context).push(
                       MaterialPageRoute(builder: (context)=>Homepage()));
                     },
                     minWidth: double.infinity,
