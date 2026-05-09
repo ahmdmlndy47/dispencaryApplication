@@ -1,3 +1,5 @@
+import 'package:dispensary/components/card_widget.dart';
+import 'package:dispensary/components/main_button.dart';
 import 'package:flutter/material.dart';
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({super.key});
@@ -19,6 +21,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
             color: Colors.white
           ),
         ),
+        //زر تسجيل الخروج
         actions: [
           ElevatedButton.icon(
               onPressed: (){
@@ -46,50 +49,73 @@ class _AdminHomepageState extends State<AdminHomepage> {
         child: ListView(
           padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
           children: [
-            //أزرار إضافة المستخدمين
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //زر إضافة مريض
-                Expanded(
-                  child: MaterialButton(
-                    onPressed:(){},
-                    elevation: 7,
-                    padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                    color: Colors.blueAccent,
-                    splashColor: Colors.blueAccent.shade700,
-                    child: Text(
-                      "إضافة مريض",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300
+            //أزرار الإضافة والتعديل على المرضى والأطباء
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 10,
+                      offset: Offset(-5, 5))
+                ]
+              ),
+              child: Column(
+                children: [
+                  //أزرار إضافة المستخدمين
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //زر إضافة مريض
+                      Expanded(
+                        child: MyButton(
+                            onPressed: (){},
+                            fontSize: 18,
+                            label: "إضافة مريض",
+                            shape: RoundedRectangleBorder()),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 20,),
-                // زر إضافة طبيب
-                Expanded(
-                  child: MaterialButton(
-                    onPressed:(){},
-                    elevation: 7,
-                    padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                    color: Colors.blueAccent,
-                    splashColor: Colors.blueAccent.shade700,
-                    child: Text(
-                      "إضافة طبيب",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300
+                      SizedBox(width: 20,),
+                      // زر إضافة طبيب
+                      Expanded(
+                        child: MyButton(
+                            onPressed: (){},
+                            fontSize: 18,
+                            label: "إضافة طبيب",
+                            shape: RoundedRectangleBorder()),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
+                  SizedBox(height: 20,),
+                  //أزرار التعديل على المستخدمين
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //زر لعرض قائمة المرضى المسجلين بالتطبيق
+                      Expanded(
+                        child: MyButton(
+                            onPressed: (){},
+                            fontSize: 18,
+                            label: "مرضى المستوصف",
+                            shape: RoundedRectangleBorder()),
+                      ),
+                      SizedBox(width: 20,),
+                      // زر لعرض قائمة أطباء المستوصف
+                      Expanded(
+                        child:MyButton(
+                            onPressed: (){},
+                            fontSize: 18,
+                            label: "أطباء المستوصف",
+                            shape: RoundedRectangleBorder()),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 20,),
+            //قائمة عيادات المستوصف للتعديل عليها من قبل الآدمن
             Text(
               "عيادات المستوصف",
               style: TextStyle(
@@ -98,145 +124,54 @@ class _AdminHomepageState extends State<AdminHomepage> {
               ),
             ),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("عيادة الأطفال"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w200,
-                    color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //عيادة الأطفال
+            MyCard(
+                title: "عيادة الأطفال",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){}),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("العيادة لداخلية"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),
-
-                ),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //العيادة الداخلية
+            MyCard(
+                title: "العيادة لداخلية",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){}),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("العيادة الصدرية"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //العيادة الصدرية
+            MyCard(
+                title: "العيادة الصدرية",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){}),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("العيادة العينية"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //العيادة العينية
+            MyCard(
+                title: "العيادة العينية",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){}),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("عيادة الأسنان"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //عيادة الأسنان
+            MyCard(
+                title: "عيادة الأسنان",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){}),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("العيادة الأذنية"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //العيادة الأذنية
+            MyCard(
+                title: "العيادة الأذنية",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){}),
             SizedBox(height: 10,),
-            Card(
-              elevation: 5,
-              shadowColor: Colors.grey,
-              child: ListTile(
-                title: Text("عيادة الجلدية"),
-                subtitle: Text(
-                  "د.سمير خضورة",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Text(
-                  "انقر للتعديل",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w200,
-                      color: Colors.red
-                  ),
-                ),
-              ),
-            ),
+            //العيادة الجلدية
+            MyCard(
+                title: "عيادة الجلدية",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){})
           ],
         ),
       ),

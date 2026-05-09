@@ -53,14 +53,14 @@ class _HomepageState extends State<Homepage> {
                 backgroundColor: WidgetStatePropertyAll(Colors.blueAccent.shade700)
               ),
               label: Text(
-                "التسجيل في التطبيق",
+                "تسجيل الخروج",
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w300,
                   color: Colors.white
                 ),
               ),
-            icon: Icon(Icons.login,color: Colors.white,),
+            icon: Icon(Icons.logout,color: Colors.white,),
           )
         ],
       ),

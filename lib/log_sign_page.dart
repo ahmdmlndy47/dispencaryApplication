@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'components/main_button.dart';
 // صفحة تسجيل الدخول او إضافة ايميل و كلمة مرور
 class LogOrSignPage extends StatefulWidget {
   const LogOrSignPage({super.key});
@@ -44,49 +46,28 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // زر تسجبل الدخول
-                  MaterialButton(
-                    onPressed:(){
-                      Navigator.of(context).pushNamed("loginPage");
-                    },
-                    shape: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(30)
-                    ),
-                    minWidth: 200,
-                    padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                    color: Colors.blueAccent,
-                    splashColor: Colors.blueAccent.shade700,
-                    child: Text(
-                      "تسجيل الدخول",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
+                  MyButton(
+                      onPressed: (){
+                          Navigator.of(context).pushNamed("loginPage");
+                          },
+                      fontSize: 26,
+                      label: "تسجيل الدخول",
+                      shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: BorderSide(width: 0,color: Colors.transparent)
+                      )),
                   //زر اضافة الايميل و كلمة المرور
-                  MaterialButton(
-                    onPressed:(){
-                      Navigator.of(context).pushNamed("signupPage");
-                    },
-                    shape: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.circular(30)
+                  MyButton(
+                      onPressed: (){
+                          Navigator.of(context).pushNamed("signupPage");
+                        },
+                      fontSize: 26,
+                      label: "إنشاء حساب",
+                      shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: BorderSide(width: 0,color: Colors.transparent)
+                      )
                     ),
-                    minWidth: 200,
-                    padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-                    color: Colors.blueAccent,
-                    splashColor: Colors.blueAccent.shade700,
-                    child: Text(
-                      "إنشاء حساب",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
