@@ -33,14 +33,36 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueAccent,
-        centerTitle: true,
+        centerTitle: false,
         title: Text(
           "مستوصف الخير",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 30,
+            fontSize: 26,
             color: Colors.white
           ),),
+        actions: [
+          ElevatedButton.icon(
+              onPressed: (){
+                Navigator.of(context).pushNamed("logOrSignPage");
+              },
+              iconAlignment: IconAlignment.end,
+              style: ButtonStyle(
+                shadowColor: WidgetStatePropertyAll(Colors.grey),
+                elevation: WidgetStatePropertyAll(5),
+                backgroundColor: WidgetStatePropertyAll(Colors.blueAccent.shade700)
+              ),
+              label: Text(
+                "التسجيل في التطبيق",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white
+                ),
+              ),
+            icon: Icon(Icons.login,color: Colors.white,),
+          )
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 10),

@@ -1,3 +1,5 @@
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
 class Login extends StatefulWidget {
@@ -60,7 +62,7 @@ class _LoginState extends State<Login> {
                 ),
                  MaterialButton(
                    onPressed:(){
-                     Navigator.of(context).pushReplacementNamed("homepage");
+                     Navigator.of(context).pushNamedAndRemoveUntil("homepage",(route) => false);
                    },
                     minWidth: double.infinity,
                     height: 50,
