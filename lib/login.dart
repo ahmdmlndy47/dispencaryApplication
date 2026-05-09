@@ -1,5 +1,3 @@
-import 'package:dispensary/homepage.dart';
-import 'package:dispensary/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
 class Login extends StatefulWidget {
@@ -61,10 +59,9 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                  MaterialButton(
-                    onPressed: (){
-                      Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context)=>Homepage()));
-                    },
+                   onPressed:(){
+                     Navigator.of(context).pushNamed("homepage");
+                   },
                     minWidth: double.infinity,
                     height: 50,
                     shape: RoundedRectangleBorder(
@@ -100,9 +97,8 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
-                        onPressed: (){
-                          Navigator.push(context,
-                          MaterialPageRoute(builder: (context)=> SignUpPage()));
+                        onPressed:(){
+                          Navigator.of(context).pushNamed("signupPage");
                         },
                         child: Text("إنشاء حساب",style: TextStyle(color: Colors.blue[400]),)),
                     Text("ليس لديك حساب ؟")

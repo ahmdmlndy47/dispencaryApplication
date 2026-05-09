@@ -1,6 +1,4 @@
-import 'package:dispensary/signup.dart';
 import 'package:flutter/material.dart';
-import 'login.dart';
 // صفحة تسجيل الدخول او إضافة ايميل و كلمة مرور
 class LogOrSignPage extends StatefulWidget {
   const LogOrSignPage({super.key});
@@ -37,11 +35,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                   // زر تسجبل الدخول
                   MaterialButton(
                     onPressed:(){
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => Login(),
-                        ),
-                      );
+                      Navigator.of(context).pushNamed("loginPage");
                     },
                     shape: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.transparent),
@@ -63,11 +57,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                   //زر اضافة الايميل و كلمة المرور
                   MaterialButton(
                     onPressed:(){
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SignUpPage(),
-                        ),
-                      );
+                      Navigator.of(context).pushNamed("signupPage");
                     },
                     shape: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.transparent),
