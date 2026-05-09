@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                 ),
                  MaterialButton(
                    onPressed:(){
-                     Navigator.of(context).pushNamed("homepage");
+                     Navigator.of(context).pushReplacementNamed("homepage");
                    },
                     minWidth: double.infinity,
                     height: 50,
