@@ -1,5 +1,6 @@
 import 'package:dispensary/components/card_widget.dart';
 import 'package:dispensary/components/main_button.dart';
+import 'package:dispensary/components/myalert.dart';
 import 'package:flutter/material.dart';
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({super.key});
@@ -9,6 +10,12 @@ class AdminHomepage extends StatefulWidget {
 }
 // الصفحة الرئيسية للآدمن
 class _AdminHomepageState extends State<AdminHomepage> {
+  final String _editingClinicNameHint = "اسم العيادة";
+  final String _editingClinicDocNameHint = "اسم الطبيب";
+  final Icon clinicIcon = Icon(Icons.medical_information);
+  final Icon doctorIcon = Icon(Icons.person);
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,49 +136,518 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 title: "عيادة الأطفال",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){}),
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                            firstFieldHint: _editingClinicNameHint,
+                            secondFieldHint: _editingClinicDocNameHint,
+                            firstFieldIcon: clinicIcon,
+                            secondFieldIcon : doctorIcon,
+                            fieldController: editingController,
+                            isFieldSecure: false,
+                            enabledField: true,
+                            onVerifyPressed: (){
+                              Navigator.of(context).pop();
+                              showDialog(
+                                  context: context,
+                                  builder: (context){
+                                    return AlertDialog(
+                                      title: Text(
+                                        "هل أنت متأكد أنك تريد التعديل",
+                                        textDirection: TextDirection.rtl,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                        ),
+                                      ),
+                                      actionsAlignment: MainAxisAlignment.spaceBetween,
+                                      actions: [
+                                        TextButton(
+                                            onPressed: (){
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text(
+                                              "لا",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blueAccent
+                                              ),
+                                            ),
+                                        ),
+                                        TextButton(
+                                          onPressed: (){
+                                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                                "adminHomepage",
+                                                    (route)=> false);
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                    content: Text("تم التعديل"),
+                                                    duration: Duration(seconds: 1),
+                                                ));
+                                          },
+                                          child: Text(
+                                            "نعم",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blueAccent
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                        );
+                      });
+                }),
             SizedBox(height: 10,),
             //العيادة الداخلية
             MyCard(
                 title: "العيادة لداخلية",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){}),
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                }),
             SizedBox(height: 10,),
             //العيادة الصدرية
             MyCard(
                 title: "العيادة الصدرية",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){}),
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                }),
             SizedBox(height: 10,),
             //العيادة العينية
             MyCard(
                 title: "العيادة العينية",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){}),
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                }),
             SizedBox(height: 10,),
             //عيادة الأسنان
             MyCard(
                 title: "عيادة الأسنان",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){}),
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                }),
             SizedBox(height: 10,),
             //العيادة الأذنية
             MyCard(
                 title: "العيادة الأذنية",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){}),
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                }),
             SizedBox(height: 10,),
             //العيادة الجلدية
             MyCard(
                 title: "عيادة الجلدية",
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
-                onTap: (){})
+                onTap: (){
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                })
           ],
         ),
       ),
