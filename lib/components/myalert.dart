@@ -34,6 +34,7 @@ class MyAlert extends StatelessWidget {
                   child: Column(
                     children: [
                       InputField(
+                        validator: (val){},
                           hint: firstFieldHint,
                           icon: firstFieldIcon,
                           isObscure: isFieldSecure,
@@ -41,6 +42,7 @@ class MyAlert extends StatelessWidget {
                           enabled: enabledField),
                       SizedBox(height: 20,),
                       InputField(
+                        validator: (val){},
                           hint: secondFieldHint,
                           icon: secondFieldIcon,
                           isObscure: isFieldSecure,

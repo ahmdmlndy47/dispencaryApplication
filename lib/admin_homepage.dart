@@ -137,83 +137,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
                 onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
                   showDialog(
                       context: context,
                       builder: (context){
-                        return MyAlert(
-                            firstFieldHint: _editingClinicNameHint,
-                            secondFieldHint: _editingClinicDocNameHint,
-                            firstFieldIcon: clinicIcon,
-                            secondFieldIcon : doctorIcon,
-                            fieldController: editingController,
-                            isFieldSecure: false,
-                            enabledField: true,
-                            onVerifyPressed: (){
-                              Navigator.of(context).pop();
-                              showDialog(
-                                  context: context,
-                                  builder: (context){
-                                    return AlertDialog(
-                                      title: Text(
-                                        "هل أنت متأكد أنك تريد التعديل",
-                                        textDirection: TextDirection.rtl,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14
-                                        ),
-                                      ),
-                                      actionsAlignment: MainAxisAlignment.spaceBetween,
-                                      actions: [
-                                        TextButton(
-                                            onPressed: (){
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(
-                                              "لا",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueAccent
-                                              ),
-                                            ),
-                                        ),
-                                        TextButton(
-                                          onPressed: (){
-                                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                                "adminHomepage",
-                                                    (route)=> false);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                    content: Text("تم التعديل"),
-                                                    duration: Duration(seconds: 1),
-                                                ));
-                                          },
-                                          child: Text(
-                                            "نعم",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueAccent
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                        );
-                      });
-                }),
-            SizedBox(height: 10,),
-            //العيادة الداخلية
-            MyCard(
-                title: "العيادة لداخلية",
-                subtitle: "د.سمير خضورة",
-                trailing: "انقر للتعديل",
-                onTap: (){
-                  showDialog(
-                      context: context,
-                      builder: (context){
+                        //البوب اب الذي سيظهر
                         return MyAlert(
                           firstFieldHint: _editingClinicNameHint,
                           secondFieldHint: _editingClinicDocNameHint,
@@ -222,8 +150,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
                           onVerifyPressed: (){
                             Navigator.of(context).pop();
+                            //ليرت التأكيد
                             showDialog(
                                 context: context,
                                 builder: (context){
@@ -238,6 +168,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
                                     actions: [
+                                      //زر الإلغاء
                                       TextButton(
                                         onPressed: (){
                                           Navigator.of(context).pop();
@@ -251,8 +182,91 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                           ),
                                         ),
                                       ),
+                                      //زر التأكيد
                                       TextButton(
                                         onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
+                                          Navigator.of(context).pushNamedAndRemoveUntil(
+                                              "adminHomepage",
+                                                  (route)=> false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text("تم التعديل"),
+                                                duration: Duration(seconds: 1),
+                                              ));
+                                        },
+                                        child: Text(
+                                          "نعم",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        );
+                      });
+                }),
+            SizedBox(height: 10,),
+            //العيادة الداخلية
+            MyCard(
+                title: "العيادة لداخلية",
+                subtitle: "د.سمير خضورة",
+                trailing: "انقر للتعديل",
+                onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        //البوب اب الذي سيظهر
+                        return MyAlert(
+                          firstFieldHint: _editingClinicNameHint,
+                          secondFieldHint: _editingClinicDocNameHint,
+                          firstFieldIcon: clinicIcon,
+                          secondFieldIcon : doctorIcon,
+                          fieldController: editingController,
+                          isFieldSecure: false,
+                          enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
+                          onVerifyPressed: (){
+                            Navigator.of(context).pop();
+                            //ليرت التأكيد
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل أنت متأكد أنك تريد التعديل",
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 14
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      //زر الإلغاء
+                                      TextButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "لا",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent
+                                          ),
+                                        ),
+                                      ),
+                                      //زر التأكيد
+                                      TextButton(
+                                        onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
                                           Navigator.of(context).pushNamedAndRemoveUntil(
                                               "adminHomepage",
                                                   (route)=> false);
@@ -285,9 +299,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
                 onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
                   showDialog(
                       context: context,
                       builder: (context){
+                        //البوب اب الذي سيظهر
                         return MyAlert(
                           firstFieldHint: _editingClinicNameHint,
                           secondFieldHint: _editingClinicDocNameHint,
@@ -296,8 +312,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
                           onVerifyPressed: (){
                             Navigator.of(context).pop();
+                            //ليرت التأكيد
                             showDialog(
                                 context: context,
                                 builder: (context){
@@ -312,6 +330,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
                                     actions: [
+                                      //زر الإلغاء
                                       TextButton(
                                         onPressed: (){
                                           Navigator.of(context).pop();
@@ -325,8 +344,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                           ),
                                         ),
                                       ),
+                                      //زر التأكيد
                                       TextButton(
                                         onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
                                           Navigator.of(context).pushNamedAndRemoveUntil(
                                               "adminHomepage",
                                                   (route)=> false);
@@ -359,9 +380,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
                 onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
                   showDialog(
                       context: context,
                       builder: (context){
+                        //البوب اب الذي سيظهر
                         return MyAlert(
                           firstFieldHint: _editingClinicNameHint,
                           secondFieldHint: _editingClinicDocNameHint,
@@ -370,8 +393,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
                           onVerifyPressed: (){
                             Navigator.of(context).pop();
+                            //ليرت التأكيد
                             showDialog(
                                 context: context,
                                 builder: (context){
@@ -386,6 +411,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
                                     actions: [
+                                      //زر الإلغاء
                                       TextButton(
                                         onPressed: (){
                                           Navigator.of(context).pop();
@@ -399,8 +425,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                           ),
                                         ),
                                       ),
+                                      //زر التأكيد
                                       TextButton(
                                         onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
                                           Navigator.of(context).pushNamedAndRemoveUntil(
                                               "adminHomepage",
                                                   (route)=> false);
@@ -433,9 +461,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
                 onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
                   showDialog(
                       context: context,
                       builder: (context){
+                        //البوب اب الذي سيظهر
                         return MyAlert(
                           firstFieldHint: _editingClinicNameHint,
                           secondFieldHint: _editingClinicDocNameHint,
@@ -444,8 +474,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
                           onVerifyPressed: (){
                             Navigator.of(context).pop();
+                            //ليرت التأكيد
                             showDialog(
                                 context: context,
                                 builder: (context){
@@ -460,6 +492,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
                                     actions: [
+                                      //زر الإلغاء
                                       TextButton(
                                         onPressed: (){
                                           Navigator.of(context).pop();
@@ -473,8 +506,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                           ),
                                         ),
                                       ),
+                                      //زر التأكيد
                                       TextButton(
                                         onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
                                           Navigator.of(context).pushNamedAndRemoveUntil(
                                               "adminHomepage",
                                                   (route)=> false);
@@ -507,9 +542,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
                 onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
                   showDialog(
                       context: context,
                       builder: (context){
+                        //البوب اب الذي سيظهر
                         return MyAlert(
                           firstFieldHint: _editingClinicNameHint,
                           secondFieldHint: _editingClinicDocNameHint,
@@ -518,8 +555,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
                           onVerifyPressed: (){
                             Navigator.of(context).pop();
+                            //ليرت التأكيد
                             showDialog(
                                 context: context,
                                 builder: (context){
@@ -534,6 +573,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
                                     actions: [
+                                      //زر الإلغاء
                                       TextButton(
                                         onPressed: (){
                                           Navigator.of(context).pop();
@@ -547,8 +587,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                           ),
                                         ),
                                       ),
+                                      //زر التأكيد
                                       TextButton(
                                         onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
                                           Navigator.of(context).pushNamedAndRemoveUntil(
                                               "adminHomepage",
                                                   (route)=> false);
@@ -581,9 +623,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 subtitle: "د.سمير خضورة",
                 trailing: "انقر للتعديل",
                 onTap: (){
+                  //عند الضغط على العيادة سيظهر بوب اب التعديل
                   showDialog(
                       context: context,
                       builder: (context){
+                        //البوب اب الذي سيظهر
                         return MyAlert(
                           firstFieldHint: _editingClinicNameHint,
                           secondFieldHint: _editingClinicDocNameHint,
@@ -592,8 +636,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
+                          //عند تأكيد التعديل سيظهر اليرت لتأكيد التعديل النهائي
                           onVerifyPressed: (){
                             Navigator.of(context).pop();
+                            //ليرت التأكيد
                             showDialog(
                                 context: context,
                                 builder: (context){
@@ -608,6 +654,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
                                     actions: [
+                                      //زر الإلغاء
                                       TextButton(
                                         onPressed: (){
                                           Navigator.of(context).pop();
@@ -621,8 +668,10 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                           ),
                                         ),
                                       ),
+                                      //زر التأكيد
                                       TextButton(
                                         onPressed: (){
+                                          //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
                                           Navigator.of(context).pushNamedAndRemoveUntil(
                                               "adminHomepage",
                                                   (route)=> false);

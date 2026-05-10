@@ -58,6 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               ),
                 InputField(
+                  validator: (val){},
                   hint: "أدخل رمز التعريف",
                   icon: Icon(Icons.perm_identity),
                   isObscure: false,
@@ -94,6 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 InputField(
+                  validator: (val){},
                   hint: "أدخل البريد الإلكتروني",
                   icon: Icon(Icons.mail),
                   isObscure: false,
@@ -110,6 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 InputField(
+                  validator: (val){},
                   hint: "أدخل كلمة المرور",
                   icon: Icon(Icons.lock),
                   isObscure: true,
@@ -126,6 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 InputField(
+                  validator: (val){},
                   hint: "أدخل كلمة المرور مرة أخرى",
                   icon: Icon(Icons.lock),
                   isObscure: true,

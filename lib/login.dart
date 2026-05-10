@@ -42,7 +42,13 @@ class _LoginState extends State<Login> {
                       fontWeight: FontWeight.bold
                   ),
                 ),
-                InputField(hint: "أدخل البريد الإلكتروني", icon: Icon(Icons.mail), isObscure: false, controller: email,enabled: true,),
+                InputField(
+                  validator: (val){},
+                  hint: "أدخل البريد الإلكتروني",
+                  icon: Icon(Icons.mail),
+                  isObscure: false,
+                  controller: email,enabled: true,
+                ),
                 SizedBox(height: 10,),
                 Text(
                   "كلمة المرور",
@@ -51,7 +57,13 @@ class _LoginState extends State<Login> {
                       fontWeight: FontWeight.bold
                   ),
                 ),
-                InputField(hint: "أدخل كلمة المرور", icon: Icon(Icons.lock), isObscure: true, controller: password,enabled: true,),
+                InputField(
+                  validator: (val){},
+                  hint: "أدخل كلمة المرور",
+                  icon: Icon(Icons.lock),
+                  isObscure: true,
+                  controller: password,
+                  enabled: true,),
                 Container(
                   alignment: Alignment.topLeft,
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
