@@ -1,6 +1,7 @@
 import 'package:dispensary/components/card_widget.dart';
+import 'package:dispensary/components/input_field.dart';
 import 'package:dispensary/components/main_button.dart';
-import 'package:dispensary/components/myalert.dart';
+import 'package:dispensary/components/my_editing_alert.dart';
 import 'package:flutter/material.dart';
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({super.key});
@@ -10,7 +11,7 @@ class AdminHomepage extends StatefulWidget {
 }
 // الصفحة الرئيسية للآدمن
 class _AdminHomepageState extends State<AdminHomepage> {
-  final String _editingClinicNameHint = "اسم العيادة";
+  final TextEditingController addingClinicController = TextEditingController();
   final String _editingClinicDocNameHint = "اسم الطبيب";
   final Icon clinicIcon = Icon(Icons.medical_information);
   final Icon doctorIcon = Icon(Icons.person);
@@ -23,28 +24,28 @@ class _AdminHomepageState extends State<AdminHomepage> {
         title: Text(
           "المدير",
           style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.white
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
           ),
         ),
         //زر تسجيل الخروج
         actions: [
           ElevatedButton.icon(
-              onPressed: (){
-                Navigator.of(context).pushNamed("logOrSignPage");
-              },
+            onPressed: (){
+              Navigator.of(context).pushNamed("logOrSignPage");
+            },
             style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.blueAccent.shade700)
+                backgroundColor: WidgetStatePropertyAll(Colors.blueAccent.shade700)
             ),
-              label: Text(
-                "تسجيل الخروج",
-                style: TextStyle(
+            label: Text(
+              "تسجيل الخروج",
+              style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w300,
                   color: Colors.white
-                ),
               ),
+            ),
             icon: Icon(Icons.logout,color: Colors.white,),
             iconAlignment: IconAlignment.end,
           )
@@ -60,14 +61,14 @@ class _AdminHomepageState extends State<AdminHomepage> {
             Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10,
-                      offset: Offset(-5, 5))
-                ]
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 10,
+                        offset: Offset(-5, 5))
+                  ]
               ),
               child: Column(
                 children: [
@@ -118,6 +119,142 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20,),
+                  //زر لإضافة عيادة
+                  MyButton(
+                      onPressed: (){
+                        showDialog(
+                            context: context,
+                            builder: (context){
+                              return Dialog(
+                                child: Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "أدخل معلومات العيادة التي سوف تضيفها",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16
+                                          ),
+                                        ),
+                                        SizedBox(height: 10,),
+                                        InputField(
+                                            hint: "اسم العيادة",
+                                            icon: Icon(Icons.medical_information),
+                                            isObscure: false,
+                                            controller: addingClinicController,
+                                            enabled: true,
+                                            validator: (val){}
+                                        ),
+                                        SizedBox(height: 20,),
+                                        Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TextButton(
+                                                    onPressed: (){
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text(
+                                                      "إلغاء",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight: FontWeight.w300,
+                                                          color: Colors.blueAccent
+                                                      ),)),
+                                              TextButton(
+                                                  onPressed: (){
+                                                    Navigator.of(context).pop();
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context){
+                                                          return Directionality(
+                                                            textDirection: TextDirection.rtl,
+                                                            child: AlertDialog(
+                                                              title: Text(
+                                                                "هل انت متأكد من إضافة هذه العيادة:",
+                                                                textAlign: TextAlign.start,
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: Colors.black
+                                                                ),
+                                                              ),
+                                                              content: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text("اسم العيادة:${addingClinicController.text}"),
+                                                                ],
+                                                              ),
+                                                              actions: [
+                                                                //زر الإلغاء
+                                                                TextButton(
+                                                                  onPressed: (){
+                                                                    Navigator.of(context).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    "لا",
+                                                                    style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: Colors.blueAccent
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                //زر التأكيد
+                                                                TextButton(
+                                                                  onPressed: (){
+                                                                    //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
+                                                                    Navigator.of(context).pushNamedAndRemoveUntil(
+                                                                        "adminHomepage",
+                                                                            (route)=> false);
+                                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                                        SnackBar(
+                                                                          content: Text("تمت الإضافة"),
+                                                                          duration: Duration(seconds: 1),
+                                                                        ));
+                                                                  },
+                                                                  child: Text(
+                                                                    "نعم",
+                                                                    style: TextStyle(
+                                                                        fontSize: 14,
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: Colors.blueAccent
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: Text(
+                                                    "إضافة",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w300,
+                                                        color: Colors.blueAccent
+                                                    ),)),
+                                            ],
+                                          ),
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                      label: "إضافة عيادة للمستوصف",
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0)
+                      ),
+                      fontSize: 18
+                  )
                 ],
               ),
             ),
@@ -126,8 +263,8 @@ class _AdminHomepageState extends State<AdminHomepage> {
             Text(
               "عيادات المستوصف",
               style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w600
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600
               ),
             ),
             SizedBox(height: 10,),
@@ -142,11 +279,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
@@ -223,11 +358,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
@@ -304,11 +437,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
@@ -385,11 +516,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
@@ -466,11 +595,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
@@ -547,11 +674,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,
@@ -628,11 +753,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       context: context,
                       builder: (context){
                         //البوب اب الذي سيظهر
-                        return MyAlert(
-                          firstFieldHint: _editingClinicNameHint,
-                          secondFieldHint: _editingClinicDocNameHint,
-                          firstFieldIcon: clinicIcon,
-                          secondFieldIcon : doctorIcon,
+                        return MyEditingAlert(
+                          doctorHint: _editingClinicDocNameHint,
+                          iconHint: Icon(Icons.person),
                           fieldController: editingController,
                           isFieldSecure: false,
                           enabledField: true,

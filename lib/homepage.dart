@@ -33,7 +33,7 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueAccent,
-        centerTitle: false,
+        centerTitle: true,
         title: Text(
           "مستوصف الخير",
           style: TextStyle(
