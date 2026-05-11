@@ -41,28 +41,6 @@ class _HomepageState extends State<Homepage> {
             fontSize: 26,
             color: Colors.white
           ),),
-        actions: [
-          ElevatedButton.icon(
-              onPressed: (){
-                Navigator.of(context).pushNamed("logOrSignPage");
-              },
-              iconAlignment: IconAlignment.end,
-              style: ButtonStyle(
-                shadowColor: WidgetStatePropertyAll(Colors.grey),
-                elevation: WidgetStatePropertyAll(5),
-                backgroundColor: WidgetStatePropertyAll(Colors.blueAccent.shade700)
-              ),
-              label: Text(
-                "تسجيل الخروج",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.white
-                ),
-              ),
-            icon: Icon(Icons.logout,color: Colors.white,),
-          )
-        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 10),
@@ -82,19 +60,22 @@ class _HomepageState extends State<Homepage> {
                 textDirection: TextDirection.rtl,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "أحجز موعدك و أنت بمكانك و اعرف كم شخص امامك",
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600
+                  Expanded(
+                    child: Text(
+                      "أحجز موعدك و أنت بمكانك و اعرف كم شخص امامك",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600
+                      ),
                     ),
                   ),
                   CircleAvatar(
-                    backgroundImage: AssetImage("images/book_logo.png"),
-                    radius: 20,
-                  )
+                      backgroundImage: AssetImage("images/book_logo.png"),
+                      radius: 20,
+                  ),
+
                 ],
               ),
             ),
@@ -113,10 +94,10 @@ class _HomepageState extends State<Homepage> {
                 child: GridView.builder(
                     padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 0,
+                        crossAxisCount: MediaQuery.of(context).size.width < 300 ? 1 : 2,
+                        mainAxisSpacing: 10,
                         crossAxisSpacing: 20,
-                        childAspectRatio: 1.9
+                        childAspectRatio: MediaQuery.of(context).size.width < 300 ? 3 : 1.9,
                       ),
                       itemCount: 7,
 

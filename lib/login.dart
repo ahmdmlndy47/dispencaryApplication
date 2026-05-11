@@ -1,5 +1,6 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
+import 'package:dispensary/components/main_button.dart';
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
 class Login extends StatefulWidget {
@@ -72,40 +73,16 @@ class _LoginState extends State<Login> {
                     child:Text("هل نسيت كلمة المرور ؟",style: TextStyle(color: Colors.blue[400]),),
                   ),
                 ),
-                 MaterialButton(
-                   onPressed:(){
-                     Navigator.of(context).pushNamedAndRemoveUntil("homepage",(route) => false);
-                   },
-                    minWidth: double.infinity,
-                    height: 50,
+                MyButton(
+                    onPressed: (){
+                      Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route)=>false);
+                    },
+                    label: "تسجيل الدخول",
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
+                      borderRadius: BorderRadius.circular(20)
                     ),
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    elevation: 0,
-                    child: Text("تسجيل دخول"),
-                  ),
-                SizedBox(height: 20,),
-                MaterialButton(
-                    onPressed: (){},
-                    minWidth: double.infinity,
-                    height: 50,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    elevation: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset("images/ss.png",width: 30,),
-                        SizedBox(width: 10,),
-                        Text("تسجيل دخول باستخدام جوجل"),
-                      ],
-                    ),
-                  ),
+                    fontSize: 18
+                ),
                 SizedBox(height: 20,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

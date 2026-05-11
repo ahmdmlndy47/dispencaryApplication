@@ -32,13 +32,17 @@ class _SpecialityState extends State<Speciality> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 textDirection: TextDirection.rtl,
                 children: [
-                  Text(
-                    "عيادة ${widget.specialityName}",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
-                    ),),
+                  Expanded(
+                    child: Text(
+                      "عيادة ${widget.specialityName}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                      ),),
+                  ),
                   CircleAvatar(
                     backgroundImage: AssetImage("images/clinic_icon2.png"),
                     radius: 15,

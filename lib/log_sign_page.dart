@@ -13,17 +13,6 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          centerTitle: true,
-          backgroundColor: Colors.blueAccent,
-          title: Text(
-            "مستوصف الخير",
-            style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),),
-        ),
         body: Container(
           // صورة الخلفبة للصفحة
           decoration: BoxDecoration(
