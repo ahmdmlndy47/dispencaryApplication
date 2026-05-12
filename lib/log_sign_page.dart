@@ -13,75 +13,67 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
   Widget build(BuildContext context) {
     return  Scaffold(
         body: Container(
+          padding: EdgeInsets.symmetric(vertical: 10,horizontal: 30),
           // صورة الخلفبة للصفحة
-          padding: EdgeInsets.symmetric(vertical: 40),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('images/logOrSignPage.jpg'),
               fit: BoxFit.cover,
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                ),
-                child: Text(
-                  "مستوصف الخير",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+          child: Center(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(30),
+                    decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(20)
+                    ),
+                    // الازرار
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        //اسم المستوصف
+                        Text(
+                          "مستوصف الخير",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        // زر تسجبل الدخول
+                        MyButton(
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("loginPage");
+                            },
+                            fontSize: 26,
+                            label: "تسجيل الدخول",
+                            shape: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(width: 0,color: Colors.transparent)
+                            )),
+                        SizedBox(height: 40,),
+                        //زر اضافة الايميل و كلمة المرور
+                        MyButton(
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("signupPage");
+                            },
+                            fontSize: 26,
+                            label: "إنشاء حساب",
+                            shape: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(width: 0,color: Colors.transparent)
+                            )
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 80,),
-              Center(
-                child: Container(
-                  padding: EdgeInsets.all(30),
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20)
-                  ),
-                  // الازرار
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // زر تسجبل الدخول
-                      MyButton(
-                          onPressed: (){
-                            Navigator.of(context).pushNamed("loginPage");
-                          },
-                          fontSize: 26,
-                          label: "تسجيل الدخول",
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(width: 0,color: Colors.transparent)
-                          )),
-                      //زر اضافة الايميل و كلمة المرور
-                      MyButton(
-                          onPressed: (){
-                            Navigator.of(context).pushNamed("signupPage");
-                          },
-                          fontSize: 26,
-                          label: "إنشاء حساب",
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide(width: 0,color: Colors.transparent)
-                          )
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         )
     );
   }
