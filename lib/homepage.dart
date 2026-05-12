@@ -1,3 +1,4 @@
+import 'package:dispensary/components/card_widget.dart';
 import 'package:dispensary/components/specializations.dart';
 import 'package:flutter/material.dart';
 class Homepage extends StatefulWidget {
@@ -6,27 +7,39 @@ class Homepage extends StatefulWidget {
   @override
   State<Homepage> createState() => _HomepageState();
 }
-
+// الصفحة الرئيسية للمريض
 class _HomepageState extends State<Homepage> {
- final List<String> _specializations = [
-    "الأطفال",
-    "الداخلية",
-    "الصدرية",
-    "العينية",
-    "الأسنان",
-    "الأذنية",
-    "الجلدية",
-  ];
- final List<String> _doctors = [
-    "سمير خضورة",
-    "سمير خضورة",
-    "سمير خضورة",
-    "سمير خضورة",
-    "سمير خضورة",
-    "سمير خضورة",
-    "سمير خضورة",
-  ];
   int _current = 0;
+ List clinics = [
+   {
+     "clinicName" : "عيادة الأطفال",
+     "docName" : "د.سمير خضورة",
+   },
+   {
+     "clinicName" : "العيادة الداخلية",
+     "docName" : "د.عائد عيدالله",
+   },
+   {
+     "clinicName" : "العيادة الصدرية",
+     "docName" : "د.فداء علواني",
+   },
+   {
+     "clinicName" : "العيادة العينية",
+     "docName" : "د.مي شهاب",
+   },
+   {
+     "clinicName" : "عيادة الأسنان",
+     "docName" : "د.إيفا حنينو",
+   },
+   {
+     "clinicName" : "عيادة الأذنية",
+     "docName" : "د.بسام شحادة",
+   },
+   {
+     "clinicName" : "العيادة الجلدية",
+     "docName" : "د.عادل اسماعيل",
+   },
+ ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +47,7 @@ class _HomepageState extends State<Homepage> {
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
+        //عنوان الصفحة
         title: Text(
           "مستوصف الخير",
           style: TextStyle(
@@ -42,12 +56,14 @@ class _HomepageState extends State<Homepage> {
             color: Colors.white
           ),),
       ),
+      //جسم الصفحة
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           textDirection: TextDirection.rtl,
           children: [
+            //نص توضيحي للصفحة من اجل المستخدم
             Container(
               width: double.infinity,
               padding: EdgeInsets.only(bottom: 10),
@@ -81,34 +97,37 @@ class _HomepageState extends State<Homepage> {
             ),
             SizedBox(height: 20,),
             Text(
-              "أختر العيادة يلي رح تزورها",
+              "أختر العيادة التي سوف تزورها",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: Colors.black
               ),
             ),
+            SizedBox(height: 10,),
+            //عيادات المستوصف
             Expanded(
               child: Directionality(
                 textDirection: TextDirection.rtl,
-                child: GridView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: MediaQuery.of(context).size.width < 300 ? 1 : 2,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: MediaQuery.of(context).size.width < 300 ? 3 : 1.9,
-                      ),
-                      itemCount: 7,
-
-                      itemBuilder: (BuildContext context, index){
-                        return Speciality(specialityName: _specializations[index],doctorName: _doctors[index],);
-                      }),
+                child: ListView.builder(
+                  itemBuilder: (context,index){
+                    //العيادة
+                    return MyCard(
+                        title: clinics[index]["clinicName"],
+                        subtitle: clinics[index]["docName"],
+                        trailing: "احجز موعدك",
+                        trailingColor: Colors.green,
+                        onTap: (){}
+                    );
+                  },
+                  itemCount: clinics.length,
+                ),
               ),
             ),
           ],
         ),
       ),
+      //تبويبات الصفحة والشريط السفلي
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _current,
         selectedItemColor: Colors.white,
@@ -120,6 +139,7 @@ class _HomepageState extends State<Homepage> {
           });
         },
         items: [
+          //بويبة الصفحة الرئيسية
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "الصفحة الرئيسية",

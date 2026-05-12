@@ -330,6 +330,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                     title: clinics[index]["clinicName"],
                     subtitle: clinics[index]["docName"],
                     trailing: "انقر للتعديل",
+                    trailingColor: Colors.red,
                     onTap: (){
                       //عند الضغط على العيادة سيظهر بوب اب التعديل
                       showDialog(
@@ -345,6 +346,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
+                                      //عتوان بوب اب التعديل
                                       Text(
                                         "التعديل على العيادة",
                                         style: TextStyle(
@@ -353,6 +355,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                         ),
                                       ),
                                       SizedBox(height: 30,),
+                                      //السيليكشن الخاصة باسماء الأطباء
                                       Form(
                                         child: Directionality(
                                           textDirection: TextDirection.rtl,
@@ -379,6 +382,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                               }),
                                         ),),
                                       SizedBox(height: 80,),
+                                      //أزرار التأكيد و الإلغاء
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [

@@ -3,8 +3,9 @@ class MyCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String trailing;
+  final Color trailingColor;
   final void Function() onTap;
-  const MyCard({super.key, required this.title, required this.subtitle, required this.trailing, required this.onTap});
+  const MyCard({super.key, required this.title, required this.subtitle, required this.trailing, required this.onTap, required this.trailingColor});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class MyCard extends StatelessWidget {
           style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w200,
-              color: Colors.red
+              color: trailingColor
           ),
         ),
       ),
