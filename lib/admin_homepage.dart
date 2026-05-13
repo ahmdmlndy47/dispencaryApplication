@@ -108,7 +108,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       //زر إضافة مريض
                       Expanded(
                         child: MyButton(
-                            onPressed: (){},
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("addPatientPage");
+                            },
                             fontSize: 18,
                             label: "إضافة مريض",
                             shape: RoundedRectangleBorder()),
@@ -117,7 +119,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       // زر إضافة طبيب
                       Expanded(
                         child: MyButton(
-                            onPressed: (){},
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("addDoctorPage");
+                            },
                             fontSize: 18,
                             label: "إضافة طبيب",
                             shape: RoundedRectangleBorder()),
