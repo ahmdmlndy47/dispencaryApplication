@@ -77,6 +77,7 @@ class _LoginState extends State<Login> {
                     onPressed: (){
                       Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route)=>false);
                     },
+                    btnColor: Colors.blueAccent,
                     label: "تسجيل الدخول",
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)

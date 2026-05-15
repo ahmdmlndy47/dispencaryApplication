@@ -111,6 +111,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                             onPressed: (){
                               Navigator.of(context).pushNamed("addPatientPage");
                             },
+                            btnColor: Colors.blueAccent,
                             fontSize: 18,
                             label: "إضافة مريض",
                             shape: RoundedRectangleBorder()),
@@ -122,6 +123,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                             onPressed: (){
                               Navigator.of(context).pushNamed("addDoctorPage");
                             },
+                            btnColor: Colors.blueAccent,
                             fontSize: 18,
                             label: "إضافة طبيب",
                             shape: RoundedRectangleBorder()),
@@ -137,6 +139,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       Expanded(
                         child: MyButton(
                             onPressed: (){},
+                            btnColor: Colors.blueAccent,
                             fontSize: 18,
                             label: "مرضى المستوصف",
                             shape: RoundedRectangleBorder()),
@@ -146,6 +149,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       Expanded(
                         child:MyButton(
                             onPressed: (){},
+                            btnColor: Colors.blueAccent,
                             fontSize: 18,
                             label: "أطباء المستوصف",
                             shape: RoundedRectangleBorder()),
@@ -249,21 +253,8 @@ class _AdminHomepageState extends State<AdminHomepage> {
 
                                                                   ],
                                                                 ),
+                                                                actionsAlignment: MainAxisAlignment.spaceBetween,
                                                                 actions: [
-                                                                  //زر الإلغاء
-                                                                  TextButton(
-                                                                    onPressed: (){
-                                                                      Navigator.of(context).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      "لا",
-                                                                      style: TextStyle(
-                                                                          fontSize: 14,
-                                                                          fontWeight: FontWeight.bold,
-                                                                          color: Colors.blueAccent
-                                                                      ),
-                                                                    ),
-                                                                  ),
                                                                   //زر التأكيد
                                                                   TextButton(
                                                                     onPressed: (){
@@ -279,6 +270,20 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                     },
                                                                     child: Text(
                                                                       "نعم",
+                                                                      style: TextStyle(
+                                                                          fontSize: 14,
+                                                                          fontWeight: FontWeight.bold,
+                                                                          color: Colors.blueAccent
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  //زر الإلغاء
+                                                                  TextButton(
+                                                                    onPressed: (){
+                                                                      Navigator.of(context).pop();
+                                                                    },
+                                                                    child: Text(
+                                                                      "لا",
                                                                       style: TextStyle(
                                                                           fontSize: 14,
                                                                           fontWeight: FontWeight.bold,
@@ -309,6 +314,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                               );
                             });
                       },
+                      btnColor: Colors.blueAccent,
                       label: "إضافة عيادة للمستوصف",
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0)
@@ -363,27 +369,83 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                       Form(
                                         child: Directionality(
                                           textDirection: TextDirection.rtl,
-                                          child: DropdownButtonFormField(
-                                              decoration: InputDecoration(
-                                                prefixIcon: Icon(Icons.person),
-                                                border: OutlineInputBorder(
-                                                    borderRadius: BorderRadius.circular(20)
-                                                ),
-                                                hintText: "اسم الطبيب",
-                                              ),
-                                              items: clinics.map<DropdownMenuItem<String>>((clinic){
-                                                return DropdownMenuItem(
-                                                  value: clinic["docName"],
-                                                  child: Text(
-                                                    clinic["docName"],
+                                          child: Column(
+                                            children: [
+                                              DropdownButtonFormField(
+                                                  decoration: InputDecoration(
+                                                    prefixIcon: Icon(Icons.person),
+                                                    border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(20)
+                                                    ),
+                                                    hintText: "اسم الطبيب",
                                                   ),
-                                                );
-                                              }).toList(),
-                                              onChanged: (val){
-                                                setState(() {
-                                                  selectedDoc = val;
-                                                });
-                                              }),
+                                                  items: clinics.map<DropdownMenuItem<String>>((clinic){
+                                                    return DropdownMenuItem(
+                                                      value: clinic["docName"],
+                                                      child: Text(
+                                                        clinic["docName"],
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged: (val){
+                                                    setState(() {
+                                                      selectedDoc = val;
+                                                    });
+                                                  }),
+                                              SizedBox(height: 20,),
+                                              MyButton(
+                                                  onPressed: (){
+                                                    Navigator.of(context).pop();
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context){
+                                                          return AlertDialog(
+                                                            title: Text(
+                                                              "هل انت متأكد من حذف العيادة",
+                                                              style: TextStyle(
+                                                                color: Colors.black,
+                                                                fontSize: 18,
+                                                                fontWeight: FontWeight.w400
+                                                              ),
+                                                            ),
+                                                            actionsAlignment: MainAxisAlignment.spaceBetween,
+                                                            actions: [
+                                                              TextButton(
+                                                                  onPressed: (){
+                                                                    Navigator.of(context).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    "لا",
+                                                                    style: TextStyle(
+                                                                      color: Colors.red,
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w300
+                                                                    ),
+                                                                  )),
+                                                              TextButton(
+                                                                  onPressed: (){
+                                                                    Navigator.of(context).pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    "نعم",
+                                                                    style: TextStyle(
+                                                                        color: Colors.red,
+                                                                        fontSize: 12,
+                                                                        fontWeight: FontWeight.w300
+                                                                    ),
+                                                                  ))
+                                                            ],
+                                                          );
+                                                        });
+                                                  },
+                                                  btnColor: Colors.red,
+                                                  label: "حذف العيادة",
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                  ),
+                                                  fontSize: 18)
+                                            ],
+                                          ),
                                         ),),
                                       SizedBox(height: 80,),
                                       //أزرار التأكيد و الإلغاء

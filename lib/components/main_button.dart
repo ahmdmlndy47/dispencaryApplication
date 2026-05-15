@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 class MyButton extends StatelessWidget {
   final void Function() onPressed;
+  final Color btnColor;
   final String label;
   final ShapeBorder shape;
   final double fontSize;
-  const MyButton({super.key, required this.onPressed, required this.label, required this.shape, required this.fontSize});
+  const MyButton({super.key, required this.onPressed, required this.label, required this.shape, required this.fontSize,required this.btnColor});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +15,7 @@ class MyButton extends StatelessWidget {
       onPressed: onPressed,
       elevation: 7,
       padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
-      color: Colors.blueAccent,
-      splashColor: Colors.blueAccent.shade700,
+      color: btnColor,
       child: Text(
         label,
         style: TextStyle(

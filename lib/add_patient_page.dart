@@ -10,12 +10,31 @@ class AddPatientPage extends StatefulWidget {
 }
 
 class _AddPatientPageState extends State<AddPatientPage> {
-TextEditingController firstNameController = TextEditingController();
-TextEditingController lastNameController = TextEditingController();
-TextEditingController ageController = TextEditingController();
-TextEditingController phoneNumController = TextEditingController();
-TextEditingController nationNumController = TextEditingController();
+late TextEditingController firstNameController;
+late TextEditingController lastNameController;
+late TextEditingController ageController;
+late TextEditingController phoneNumController;
+late TextEditingController nationNumController;
 
+@override
+  void initState() {
+  firstNameController = TextEditingController();
+  lastNameController = TextEditingController();
+  ageController = TextEditingController();
+  phoneNumController = TextEditingController();
+  nationNumController = TextEditingController();
+  super.initState();
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    ageController.dispose();
+    phoneNumController.dispose();
+    nationNumController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,6 +153,7 @@ TextEditingController nationNumController = TextEditingController();
                 //زر الإضافة
                 MyButton(
                     onPressed: (){},
+                    btnColor: Colors.blueAccent,
                     label: "إضافة المريض",
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),

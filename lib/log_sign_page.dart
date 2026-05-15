@@ -50,6 +50,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                             onPressed: (){
                               Navigator.of(context).pushNamed("loginPage");
                             },
+                            btnColor: Colors.blueAccent,
                             fontSize: 26,
                             label: "تسجيل الدخول",
                             shape: OutlineInputBorder(
@@ -62,6 +63,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                             onPressed: (){
                               Navigator.of(context).pushNamed("signupPage");
                             },
+                            btnColor: Colors.blueAccent,
                             fontSize: 26,
                             label: "إنشاء حساب",
                             shape: OutlineInputBorder(
