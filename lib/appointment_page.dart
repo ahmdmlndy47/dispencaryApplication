@@ -7,6 +7,7 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
+  bool hasAppoint = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,20 +25,20 @@ class _AppointmentPageState extends State<AppointmentPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
-        child: Center(
+        child: hasAppoint ? Center(
           child: Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color:  Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: Offset(-5, 5),
-                  blurRadius: 5
-                ),
+                color:  Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(-5, 5),
+                      blurRadius: 5
+                  ),
 
-              ]
+                ]
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -46,29 +47,29 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 Text(
                   "موعدك الحالي",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22
                   ),
                 ),
                 SizedBox(height: 20,),
                 Text(
                   "لديك موعد بالعيادة العينية",
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500
                   ),
                 ),
                 SizedBox(height: 10,),
                 Container(
                   decoration: BoxDecoration(
-                    border: BoxBorder.all(
-                      color: Colors.red,
-                      width: 2
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.black
+                      border: BoxBorder.all(
+                          color: Colors.red,
+                          width: 2
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.black
                   ),
                   padding: EdgeInsets.symmetric(vertical: 10,horizontal: 30),
                   child: Column(
@@ -87,9 +88,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       Text(
                         "21",
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red
                         ),
                       ),
                     ],
@@ -104,27 +105,100 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       child: Text(
                         "الوقت المتبقي تقريبا 2ساعة",
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400
                         ),
                       ),
                     ),
                     Expanded(
                       child: TextButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            showDialog(
+                                context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    title: Text(
+                                      "هل انت متأكد من إلغاء الموعد",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400
+                                      ),
+                                    ),
+                                    actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    actions: [
+                                      TextButton(
+                                          onPressed: (){
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            "لا",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300
+                                            ),
+                                          )),
+                                      TextButton(
+                                          onPressed: (){
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              hasAppoint = false;
+                                            });
+                                          },
+                                          child: Text(
+                                            "نعم",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300
+                                            ),
+                                          ))
+                                    ],
+                                  );
+                                });
+                          },
                           child: Text(
                             "إلغاء الموعد",
                             style:TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12
+                                color: Colors.red,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12
                             ),
                           )),
                     )
                   ],
                 )
               ],
+            ),
+          ),
+        )
+            : Center(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10,horizontal: 50),
+            decoration: BoxDecoration(
+                border: BoxBorder.all(
+                  color: Colors.red,
+                  width: 2
+                ),
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(-5, 5),
+                      blurRadius: 5
+                  )
+                ]
+            ),
+            child: Text(
+              "لا يوجد موعد حالي",
+              style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600
+              ),
             ),
           ),
         ),
