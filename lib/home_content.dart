@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'components/card_widget.dart';
+//  الصفحة الرئيسية للمريض الخاصة بمحتوى الصفحة الرئيسية
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
 
@@ -55,7 +56,7 @@ class _HomeContentState extends State<HomeContent> {
         centerTitle: true,
         //عنوان الصفحة
         title: Text(
-          "مستوصف الخير",
+          "الصفحة الرئيسية",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 26,
@@ -78,10 +79,12 @@ class _HomeContentState extends State<HomeContent> {
                       bottom: BorderSide(width: 1,color: Colors.grey)
                   )
               ),
+              //سيتم وضع النص التوضيحي مع صورة له ضمن سطر واحد
               child: Row(
                 textDirection: TextDirection.rtl,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  //النص التوضيحي
                   Expanded(
                     child: Text(
                       "أحجز موعدك و أنت بمكانك و اعرف كم شخص امامك",
@@ -93,6 +96,7 @@ class _HomeContentState extends State<HomeContent> {
                       ),
                     ),
                   ),
+                  //صورة خاصة بالنص التوضيحي
                   CircleAvatar(
                     backgroundImage: AssetImage("images/book_logo.png"),
                     radius: 20,
@@ -102,6 +106,7 @@ class _HomeContentState extends State<HomeContent> {
               ),
             ),
             SizedBox(height: 20,),
+            //نص العيادات
             Text(
               "أختر العيادة التي سوف تزورها",
               style: TextStyle(
@@ -171,6 +176,7 @@ class _HomeContentState extends State<HomeContent> {
                                               //زر الإلغاء
                                               Expanded(
                                                 child: TextButton(
+                                                  //عند الضغط عليه سيتم إزالة الاليرت
                                                     onPressed: (){
                                                       Navigator.of(context).pop();
                                                     },
@@ -209,6 +215,7 @@ class _HomeContentState extends State<HomeContent> {
                                                                 //زر الإلغاء
                                                                 TextButton(
                                                                     onPressed: (){
+                                                                      //عند الضغط عليه سيتم إزالة الاليرت
                                                                       Navigator.of(context).pop();
                                                                     },
                                                                     child: Text(

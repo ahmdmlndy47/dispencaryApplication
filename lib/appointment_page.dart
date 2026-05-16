@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// صفحة الموعد الخاص بالمريض
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({super.key});
 
@@ -11,6 +12,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //عنوان الصفحة
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
@@ -23,9 +25,13 @@ class _AppointmentPageState extends State<AppointmentPage> {
           ),
         ),
       ),
+      //جسم الصفحة
       body: Padding(
         padding: const EdgeInsets.all(30.0),
+        //إذا كان لديه موعد سنظهر الموعد
+        //إذا لم يكن لديه موعد سيظهر نص يوضح أنه ليس لديه موعد
         child: hasAppoint ? Center(
+          //الموعد الذي سيظهر
           child: Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -44,6 +50,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                //عنوان الموعد
                 Text(
                   "موعدك الحالي",
                   style: TextStyle(
@@ -53,6 +60,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   ),
                 ),
                 SizedBox(height: 20,),
+                //العيادة التي حجز فيها الموعد
                 Text(
                   "لديك موعد بالعيادة العينية",
                   style: TextStyle(
@@ -62,6 +70,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   ),
                 ),
                 SizedBox(height: 10,),
+                //كونتينر خاص بعدد المرضى المتبقي ليصل المريض لدوره
                 Container(
                   decoration: BoxDecoration(
                       border: BoxBorder.all(
@@ -76,6 +85,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      //نص توضيحي
                       Text(
                         "دورك الحالي",
                         style: TextStyle(
@@ -85,6 +95,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         ),
                       ),
                       SizedBox(height: 10,),
+                      //عدد المرضى المتبقيين
                       Text(
                         "21",
                         style: TextStyle(
@@ -98,9 +109,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 ),
                 SizedBox(height: 20,),
                 Row(
+                  //سطر يحتوي على الوقت المتبقي المتوقع وزر لإلغاء الموعد
                   mainAxisSize: MainAxisSize.min,
                   textDirection: TextDirection.rtl,
                   children: [
+                    //الوقت المتبقي
                     Expanded(
                       child: Text(
                         "الوقت المتبقي تقريبا 2ساعة",
@@ -111,13 +124,16 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         ),
                       ),
                     ),
+                    // زر إلغاء الموعد
                     Expanded(
                       child: TextButton(
                           onPressed: (){
+                            //عند الضغط عليه سيظهر اليرت لتأكيد الإلغاء
                             showDialog(
                                 context: context,
                                 builder: (context){
                                   return AlertDialog(
+                                    //نص التأكيد
                                     title: Text(
                                       "هل انت متأكد من إلغاء الموعد",
                                       style: TextStyle(
@@ -127,8 +143,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                       ),
                                     ),
                                     actionsAlignment: MainAxisAlignment.spaceBetween,
+                                    //أزرار الإلغاء و التأكيد
                                     actions: [
+                                      //زر إلغاء لإلغاء الموعد
                                       TextButton(
+                                        //عند الضغط عليه سيتم إزالة الأليرت
                                           onPressed: (){
                                             Navigator.of(context).pop();
                                           },
@@ -140,8 +159,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                 fontWeight: FontWeight.w300
                                             ),
                                           )),
+                                      //زر تأكيد الإلغاء
                                       TextButton(
                                           onPressed: (){
+                                            //عند الضغط عليه سنجعل المريض لا يملك موعد
+                                            //وذلك من أجل عرض الرسالة التوضيحية بأنه لا يملك موعد
                                             Navigator.of(context).pop();
                                             setState(() {
                                               hasAppoint = false;
@@ -174,6 +196,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
             ),
           ),
         )
+        //الرسالة التوضيحي بأنه لا يملك موعد
             : Center(
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 10,horizontal: 50),
@@ -192,6 +215,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   )
                 ]
             ),
+            //النص التوضيحي
             child: Text(
               "لا يوجد موعد حالي",
               style: TextStyle(

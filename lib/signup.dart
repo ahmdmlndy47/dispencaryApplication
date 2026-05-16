@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
+import 'package:http/http.dart';
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 

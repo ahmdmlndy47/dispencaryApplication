@@ -10,6 +10,8 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 // الصفحة الرئيسية للمريض
+// هذه الصفحة ستحتوي فقط على الشريط السفلي
+// وذلك كي يظهر الاب بار الخاص بكل صفحة من صفحات المريض
 class _HomepageState extends State<Homepage> {
   int _current = 0;
 
