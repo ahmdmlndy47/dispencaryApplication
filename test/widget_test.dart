@@ -9,7 +9,7 @@ import 'package:dispensary/log_sign_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dispensary/main.dart';
+// import 'package:dispensary/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -29,3 +29,18 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 }
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:dispensary/log_sign_page.dart';
+// import 'package:flutter/material.dart';
+//
+// void main() {
+//   testWidgets('LogOrSignPage loads', (WidgetTester tester) async {
+//     await tester.pumpWidget(
+//       const MaterialApp(
+//         home: LogOrSignPage(),
+//       ),
+//     );
+//
+//     expect(find.byType(LogOrSignPage), findsOneWidget);
+//   });
+// }
