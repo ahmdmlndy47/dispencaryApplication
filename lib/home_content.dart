@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'components/card_widget.dart';
@@ -130,9 +131,10 @@ class _HomeContentState extends State<HomeContent> {
                         trailingColor: Colors.green,
                         //عند الضغط على العيادة سيظهر اليرت لتأكيد الحجز
                         onTap: (){
+                          final parentContext = context;
                           showDialog(
                               context: context,
-                              builder: (context){
+                              builder: (dialogContext){
                                 //اليرت الحجز
                                 return Dialog(
                                   elevation: 7,
@@ -194,64 +196,28 @@ class _HomeContentState extends State<HomeContent> {
                                               Expanded(
                                                 child: TextButton(
                                                     onPressed: (){
+                                                      final messenger = ScaffoldMessenger.of(parentContext);
                                                       //عند الضغط عليه سيظهر اليرت للتأكيد النهائي
-                                                      Navigator.of(context).pop();
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context){
-                                                            return AlertDialog(
-                                                              backgroundColor: Colors.black,
-                                                              title: Text(
-                                                                "هل تريد تأكيد الحجز",
-                                                                textDirection: TextDirection.rtl,
-                                                                style: TextStyle(
-                                                                  fontSize: 18,
-                                                                  fontWeight: FontWeight.bold,
-                                                                  color: Colors.white,
-                                                                ),
-                                                              ),
-                                                              actionsAlignment: MainAxisAlignment.spaceBetween,
-                                                              actions: [
-                                                                //زر الإلغاء
-                                                                TextButton(
-                                                                    onPressed: (){
-                                                                      //عند الضغط عليه سيتم إزالة الاليرت
-                                                                      Navigator.of(context).pop();
-                                                                    },
-                                                                    child: Text(
-                                                                      "لا",
-                                                                      style: TextStyle(
-                                                                          fontSize: 14,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: Colors.red
-                                                                      ),
-                                                                    )
-                                                                ),
-                                                                //زر التأكيد
-                                                                TextButton(
-                                                                    onPressed: (){
-                                                                      //عند الضغط عليه سيظهر سناك بار توضيحي بالحجز
-                                                                      Navigator.of(context).pop();
-                                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                                          SnackBar(
-                                                                              content: Text("تم الحجز"),
-                                                                              duration: Duration(seconds: 1)
-                                                                          )
-                                                                      );
-                                                                    },
-                                                                    child: Text(
-                                                                      "نعم",
-                                                                      style: TextStyle(
-                                                                          fontSize: 14,
-                                                                          fontWeight: FontWeight.w300,
-                                                                          color: Colors.green
-                                                                      ),
-                                                                    )
-                                                                )
-                                                              ],
-                                                            );
-                                                          }
-                                                      );
+                                                      Navigator.of(dialogContext).pop();
+                                                      AwesomeDialog(
+                                                        context: parentContext,
+                                                        title: "تأكيد الحجز",
+                                                        desc: "هل أنت متأكد من حجز الموعد",
+                                                        dialogType: DialogType.question,
+                                                        showCloseIcon: true,
+                                                        animType: AnimType.rightSlide,
+                                                        btnOkOnPress: (){
+                                                          messenger.showSnackBar(
+                                                              SnackBar(
+                                                                  content: Text("تم الحجز"),
+                                                                  duration: Duration(seconds: 1)
+                                                              )
+                                                          );
+                                                        },
+                                                        btnCancelOnPress: (){},
+                                                        btnOkText: "نعم",
+                                                        btnCancelText: "لا"
+                                                      ).show();
                                                     },
                                                     child: Text(
                                                       "حجز",

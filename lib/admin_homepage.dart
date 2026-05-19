@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dispensary/components/card_widget.dart';
 import 'package:dispensary/components/input_field.dart';
 import 'package:dispensary/components/main_button.dart';
@@ -342,10 +343,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                     trailing: "انقر للتعديل",
                     trailingColor: Colors.red,
                     onTap: (){
+                      final parentContext = context;
                       //عند الضغط على العيادة سيظهر بوب اب التعديل
                       showDialog(
                           context: context,
-                          builder: (context){
+                          builder: (dialogContext){
                             //البوب اب الذي سيظهر
                             return Dialog(
                               child: Directionality(
@@ -395,48 +397,27 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                               SizedBox(height: 20,),
                                               MyButton(
                                                   onPressed: (){
-                                                    Navigator.of(context).pop();
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context){
-                                                          return AlertDialog(
-                                                            title: Text(
-                                                              "هل انت متأكد من حذف العيادة",
-                                                              style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontSize: 18,
-                                                                fontWeight: FontWeight.w400
-                                                              ),
-                                                            ),
-                                                            actionsAlignment: MainAxisAlignment.spaceBetween,
-                                                            actions: [
-                                                              TextButton(
-                                                                  onPressed: (){
-                                                                    Navigator.of(context).pop();
-                                                                  },
-                                                                  child: Text(
-                                                                    "لا",
-                                                                    style: TextStyle(
-                                                                      color: Colors.red,
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w300
-                                                                    ),
-                                                                  )),
-                                                              TextButton(
-                                                                  onPressed: (){
-                                                                    Navigator.of(context).pop();
-                                                                  },
-                                                                  child: Text(
-                                                                    "نعم",
-                                                                    style: TextStyle(
-                                                                        color: Colors.red,
-                                                                        fontSize: 12,
-                                                                        fontWeight: FontWeight.w300
-                                                                    ),
-                                                                  ))
-                                                            ],
-                                                          );
-                                                        });
+                                                    final messenger = ScaffoldMessenger.of(parentContext);
+                                                    Navigator.of(dialogContext).pop();
+                                                    AwesomeDialog(
+                                                      context: parentContext,
+                                                      title: "حذف عيادة",
+                                                      desc: "هل انت متأكد من حذف العيادة",
+                                                      dialogType: DialogType.error,
+                                                      animType: AnimType.rightSlide,
+                                                      btnCancelText: "لا",
+                                                      btnOkText: "نعم",
+                                                      showCloseIcon: true,
+                                                      btnCancelOnPress: (){},
+                                                      btnOkOnPress: (){
+                                                        messenger.showSnackBar(
+                                                          SnackBar(
+                                                            content: Text("تم الحذف"),
+                                                            duration: Duration(seconds: 1),
+                                                          )
+                                                        );
+                                                      }
+                                                    ).show();
                                                   },
                                                   btnColor: Colors.red,
                                                   label: "حذف العيادة",
@@ -452,6 +433,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
+                                          //زر الإلغاء
                                           Expanded(
                                             child: TextButton(
                                                 onPressed: (){
@@ -465,64 +447,31 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                       color: Colors.red
                                                   ),)),
                                           ),
+                                          //زر التأكيد
                                           Expanded(
                                             child: TextButton(
                                                 onPressed: (){
-                                                  Navigator.of(context).pop();
-                                                  //ليرت التأكيد
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (context){
-                                                        return AlertDialog(
-                                                          title: Text(
-                                                            "هل أنت متأكد أنك تريد التعديل",
-                                                            textDirection: TextDirection.rtl,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.w300,
-                                                                fontSize: 14
-                                                            ),
-                                                          ),
-                                                          actionsAlignment: MainAxisAlignment.spaceBetween,
-                                                          actions: [
-                                                            //زر الإلغاء
-                                                            TextButton(
-                                                              onPressed: (){
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              child: Text(
-                                                                "لا",
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight.bold,
-                                                                    color: Colors.blueAccent
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            //زر التأكيد
-                                                            TextButton(
-                                                              onPressed: (){
-                                                                //عند التأكيد سنرجع لصفحة الآدمن ويظهر سناك بار بالتأكيد
-                                                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                                                    "adminHomepage",
-                                                                        (route)=> false);
-                                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text("تم التعديل"),
-                                                                      duration: Duration(seconds: 1),
-                                                                    ));
-                                                              },
-                                                              child: Text(
-                                                                "نعم",
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight.bold,
-                                                                    color: Colors.blueAccent
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                  final messenger = ScaffoldMessenger.of(parentContext);
+                                                  Navigator.of(dialogContext).pop();
+                                                  AwesomeDialog(
+                                                      context: parentContext,
+                                                      title: "تعديل العيادة",
+                                                      desc: "هل انت متأكد من التعديل",
+                                                      dialogType: DialogType.warning,
+                                                      animType: AnimType.rightSlide,
+                                                      btnCancelText: "لا",
+                                                      btnOkText: "نعم",
+                                                      showCloseIcon: true,
+                                                      btnCancelOnPress: (){},
+                                                      btnOkOnPress: (){
+                                                        messenger.showSnackBar(
+                                                            SnackBar(
+                                                              content: Text("تم التعديل"),
+                                                              duration: Duration(seconds: 1),
+                                                            )
                                                         );
-                                                      });
+                                                      }
+                                                  ).show();
                                                 },
                                                 child: Text(
                                                   "تعديل",

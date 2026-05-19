@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 // صفحة الموعد الخاص بالمريض
 class AppointmentPage extends StatefulWidget {
@@ -129,57 +130,20 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       child: TextButton(
                           onPressed: (){
                             //عند الضغط عليه سيظهر اليرت لتأكيد الإلغاء
-                            showDialog(
-                                context: context,
-                                builder: (context){
-                                  return AlertDialog(
-                                    //نص التأكيد
-                                    title: Text(
-                                      "هل انت متأكد من إلغاء الموعد",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400
-                                      ),
-                                    ),
-                                    actionsAlignment: MainAxisAlignment.spaceBetween,
-                                    //أزرار الإلغاء و التأكيد
-                                    actions: [
-                                      //زر إلغاء لإلغاء الموعد
-                                      TextButton(
-                                        //عند الضغط عليه سيتم إزالة الأليرت
-                                          onPressed: (){
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(
-                                            "لا",
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                          )),
-                                      //زر تأكيد الإلغاء
-                                      TextButton(
-                                          onPressed: (){
-                                            //عند الضغط عليه سنجعل المريض لا يملك موعد
-                                            //وذلك من أجل عرض الرسالة التوضيحية بأنه لا يملك موعد
-                                            Navigator.of(context).pop();
-                                            setState(() {
-                                              hasAppoint = false;
-                                            });
-                                          },
-                                          child: Text(
-                                            "نعم",
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                          ))
-                                    ],
-                                  );
-                                });
+                            AwesomeDialog(
+                                    context: context,
+                                      title: "تأكيد الإلغاء",
+                                      desc: "هل أنت متأكد من إلغاء الموعد؟",
+                                    showCloseIcon: true,
+                                    dialogType: DialogType.error,
+                                    animType: AnimType.rightSlide,
+                                    btnCancelText: "لا",
+                                    btnOkText: "نعم",
+                                    btnCancelOnPress: (){},
+                                    btnOkOnPress: (){setState(() {
+                                      hasAppoint = false;
+                                    });}
+                                  ).show();
                           },
                           child: Text(
                             "إلغاء الموعد",

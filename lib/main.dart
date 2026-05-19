@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'log_sign_page.dart';
 void main() {
   runApp( MaterialApp(
-    home: Homepage(),
+    home: AdminHomepage(),
     debugShowCheckedModeBanner: false,
     routes: {
       "homepage" : (context) => Homepage(),
