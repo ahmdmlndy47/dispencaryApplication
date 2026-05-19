@@ -51,14 +51,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "المدير",
-          style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-          ),
-        ),
+        title: Text("المدير",),
         //زر تسجيل الخروج
         actions: [
           ElevatedButton.icon(
@@ -80,7 +73,6 @@ class _AdminHomepageState extends State<AdminHomepage> {
             iconAlignment: IconAlignment.end,
           )
         ],
-        backgroundColor: Colors.blueAccent,
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,
@@ -329,10 +321,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
             //قائمة عيادات المستوصف للتعديل عليها من قبل الآدمن
             Text(
               "عيادات المستوصف",
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             SizedBox(height: 10,),
             ...List.generate(

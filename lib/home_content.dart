@@ -52,17 +52,9 @@ class _HomeContentState extends State<HomeContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.blueAccent,
         centerTitle: true,
         //عنوان الصفحة
-        title: Text(
-          "الصفحة الرئيسية",
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 26,
-              color: Colors.white
-          ),),
+        title: Text("الصفحة الرئيسية",),
       ),
       //جسم الصفحة
       body: Container(

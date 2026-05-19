@@ -72,19 +72,8 @@ class _AddPatientPageState extends State<AddDoctorPage> {
     return Scaffold(
       //عنوان الصفحة
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        iconTheme: IconThemeData(
-            color: Colors.white
-        ),
         centerTitle: true,
-        title: Text(
-          "صفحة إضافة طبيب",
-          style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-          ),
-        ),
+        title: Text("صفحة إضافة طبيب",),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
@@ -95,11 +84,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 //حقل إدخال الاسم الأول
                 Text(
                   "الاسم الأول",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل الاسم الأول",
@@ -113,11 +98,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 //حقل إدخال الاسم الأخير
                 Text(
                   "الاسم الأخير",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل الاسم الأخير",
@@ -131,11 +112,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 //حقل إدخال العمر
                 Text(
                   "العمر",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل العمر",
@@ -149,11 +126,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 //حقل إدخال رقم الهاتف
                 Text(
                   "رقم الهاتف",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل رقم الهاتف",
@@ -167,11 +140,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 //حقل إدخال الرقم الوطني
                 Text(
                   "الرقم الوطني",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل الرقم الوطني",
@@ -185,11 +154,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 //حقل إدخال الاختصاص
                 Text(
                   "الاختصاص",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Directionality(
                   textDirection: TextDirection.rtl,

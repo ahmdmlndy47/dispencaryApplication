@@ -15,16 +15,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     return Scaffold(
       //عنوان الصفحة
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
         centerTitle: true,
-        title: Text(
-          "موعدي",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-            color: Colors.white
-          ),
-        ),
+        title: Text("موعدي",),
       ),
       //جسم الصفحة
       body: Padding(

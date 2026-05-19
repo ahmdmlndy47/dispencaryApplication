@@ -40,18 +40,9 @@ late TextEditingController nationNumController;
     return Scaffold(
       //عنوان الصفحة
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        iconTheme: IconThemeData(
-          color: Colors.white
-        ),
         centerTitle: true,
         title: Text(
           "صفحة إضافة مريض",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white
-          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -63,11 +54,7 @@ late TextEditingController nationNumController;
                 //حقل إدخال الاسم الأول
                 Text(
                   "الاسم الأول",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل الاسم الأول",
@@ -81,11 +68,7 @@ late TextEditingController nationNumController;
                 //حقل إدخال الاسم الأخير
                 Text(
                   "الاسم الأخير",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل الاسم الأخير",
@@ -99,11 +82,7 @@ late TextEditingController nationNumController;
                 //حقل إدخال العمر
                 Text(
                   "العمر",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل العمر",
@@ -117,11 +96,7 @@ late TextEditingController nationNumController;
                 //حقل إدخال رقم الهاتف
                 Text(
                   "رقم الهاتف",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل رقم الهاتف",
@@ -135,11 +110,7 @@ late TextEditingController nationNumController;
                 //حقل إدخال الرقم الوطني
                 Text(
                   "الرقم الوطني",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                     hint: "أدخل الرقم الوطني",

@@ -38,10 +38,7 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 20,),
                 Text(
                   "البريد الإلكتروني",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                   validator: (val){},
@@ -53,10 +50,7 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 10,),
                 Text(
                   "كلمة المرور",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 InputField(
                   validator: (val){},

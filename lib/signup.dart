@@ -53,13 +53,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   //حقل إدخال رمز التحقق
                   Text(
-                "رمز التعريف",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-                ),
+                    "رمز التعريف",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   InputField(
                     validator: (val){},
                     hint: "أدخل رمز التعريف",
@@ -91,11 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   //حقل إضافة البريد الإلكتروني
                   Text(
                     "البريد الإلكتروني",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   InputField(
                     validator: (val){},
@@ -108,11 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   //حقل إضافة كلمة المرور
                   Text(
                     "كلمة المرور",
-                    style: TextStyle(
-                        color:  Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   InputField(
                     validator: (val){},
@@ -125,11 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   //حقل تأكيد كلمة المرور
                   Text(
                     "تأكيد كلمة المرور",
-                    style: TextStyle(
-                        color:  Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   InputField(
                     validator: (val){},

@@ -9,6 +9,26 @@ import 'log_sign_page.dart';
 void main() {
   runApp( MaterialApp(
     home: AdminHomepage(),
+    theme: ThemeData(
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.blueAccent,
+        titleTextStyle: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
+      ),
+      textTheme: TextTheme(
+        titleMedium: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold
+        )
+      )
+    ),
     debugShowCheckedModeBanner: false,
     routes: {
       "homepage" : (context) => Homepage(),
