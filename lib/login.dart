@@ -45,7 +45,8 @@ class _LoginState extends State<Login> {
                   hint: "أدخل البريد الإلكتروني",
                   icon: Icon(Icons.mail),
                   isObscure: false,
-                  controller: email,enabled: true,
+                  controller: email,
+                  enabled: true,
                 ),
                 SizedBox(height: 10,),
                 Text(

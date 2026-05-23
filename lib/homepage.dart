@@ -1,7 +1,6 @@
 import 'package:dispensary/appointment_page.dart';
-import 'package:dispensary/components/card_widget.dart';
-import 'package:dispensary/components/specializations.dart';
 import 'package:dispensary/home_content.dart';
+import 'package:dispensary/myrecords.dart';
 import 'package:flutter/material.dart';
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -17,7 +16,8 @@ class _HomepageState extends State<Homepage> {
 
  List<Widget> widgets = [
    HomeContent(),
-   AppointmentPage()
+   AppointmentPage(),
+   MyRecords()
  ];
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,13 @@ class _HomepageState extends State<Homepage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.date_range),
             label: "موعدي",
+
+          ),
+          //تبويبة السجلات
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt),
+            label: "سجلاتي",
 
           )
         ],
