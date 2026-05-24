@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 // صفحة الموعد الخاص بالمريض
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({super.key});
@@ -11,6 +12,16 @@ class AppointmentPage extends StatefulWidget {
 class _AppointmentPageState extends State<AppointmentPage> {
   bool hasAppoint = true;
   bool _sendNot = false;
+  double opacity = 1.0;
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 2), (timer){
+      setState(() {
+        opacity = opacity == 1.0 ? 0.0 : 1.0;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,12 +147,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               ),
                               SizedBox(height: 10,),
                               //عدد المرضى المتبقيين
-                              Text(
-                                "21",
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red
+                              AnimatedOpacity(
+                                curve: Curves.linear,
+                                duration: Duration(seconds: 2),
+                                opacity: opacity,
+                                child: Text(
+                                  "21",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red
+                                  ),
                                 ),
                               ),
                             ],

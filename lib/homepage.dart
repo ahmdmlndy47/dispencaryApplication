@@ -1,6 +1,7 @@
 import 'package:dispensary/appointment_page.dart';
 import 'package:dispensary/home_content.dart';
 import 'package:dispensary/myrecords.dart';
+import 'package:dispensary/profile.dart';
 import 'package:flutter/material.dart';
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -12,18 +13,21 @@ class Homepage extends StatefulWidget {
 // هذه الصفحة ستحتوي فقط على الشريط السفلي
 // وذلك كي يظهر الاب بار الخاص بكل صفحة من صفحات المريض
 class _HomepageState extends State<Homepage> {
-  int _current = 0;
+  int _current = 3;
 
  List<Widget> widgets = [
-   HomeContent(),
+   MyProfile(),
+   MyRecords(),
    AppointmentPage(),
-   MyRecords()
+   HomeContent(),
  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: widgets[_current],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _current,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black54,
@@ -34,10 +38,18 @@ class _HomepageState extends State<Homepage> {
           });
         },
         items: [
-          //تبويبة الصفحة الرئيسية
+          //تبويبة الملف الشخصي
+
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "الصفحة الرئيسية",
+            icon: Icon(Icons.person),
+            label: "الملف الشخصي",
+
+          ),
+          //تبويبة السجلات
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt),
+            label: "سجلاتي",
 
           ),
           //تبويبة الموعد
@@ -47,13 +59,12 @@ class _HomepageState extends State<Homepage> {
             label: "موعدي",
 
           ),
-          //تبويبة السجلات
-
+          //تبويبة الصفحة الرئيسية
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            label: "سجلاتي",
+            icon: Icon(Icons.home),
+            label: "الصفحة الرئيسية",
 
-          )
+          ),
         ],
       ),
     );
