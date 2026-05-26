@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:dispensary/components/input_field.dart';
+import 'package:dispensary/components/main_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -25,6 +27,18 @@ class _MyProfileState extends State<MyProfile> {
         profileImage = File(image.path);
       });
     }
+  }
+  late TextEditingController? oldPassword;
+  late TextEditingController? newPassword;
+  late TextEditingController? confirmPassword;
+  bool isFieldEnabled = false;
+
+  @override
+  void initState() {
+    oldPassword = TextEditingController();
+    newPassword = TextEditingController();
+    confirmPassword = TextEditingController();
+    super.initState();
   }
 
   @override
@@ -152,7 +166,115 @@ class _MyProfileState extends State<MyProfile> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    showDialog(
+                        context: context,
+                        builder: (context){
+                          return StatefulBuilder(
+                              builder: (context,setDialogState){
+                                return Dialog(
+                                  child: SingleChildScrollView(
+                                    child: Container(
+                                      padding: EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black,
+                                              offset: Offset(-5, 5),
+                                              blurRadius: 5
+                                          )
+                                        ],
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "تغيير كلمة المرور",
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          ),
+                                          SizedBox(height: 20,),
+                                          Text(
+                                            "كلمة المرور القديمة",
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          ),
+                                          InputField(
+                                              hint: "أدخل كلمة المرور القديمة",
+                                              icon: Icon(Icons.lock),
+                                              isObscure: true,
+                                              controller: oldPassword!,
+                                              enabled: true,
+                                              validator: (val){}
+                                          ),
+                                          SizedBox(height: 10,),
+                                          MyButton(
+                                              onPressed: (){
+                                                setDialogState((){
+                                                  isFieldEnabled = true;
+                                                });
+                                              },
+                                              label: "التحقق",
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20)
+                                              ),
+                                              fontSize: 20, btnColor: Colors.blueAccent
+                                          ),
+                                          SizedBox(height: 20,),
+                                          Text(
+                                            "كلمة المرور الجديدة",
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          ),
+                                          InputField(
+                                              hint: "أدخل كلمة المرور الجديدة",
+                                              icon: Icon(Icons.lock),
+                                              isObscure: true,
+                                              controller: newPassword!,
+                                              enabled: isFieldEnabled,
+                                              validator: (val){}
+                                          ),
+                                          SizedBox(height: 20,),
+                                          Text(
+                                            "كلمة المرور الجديدة مجدداً",
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          ),
+                                          InputField(
+                                              hint: "أدخل كلمة المرور الجديدة مجدداً",
+                                              icon: Icon(Icons.lock),
+                                              isObscure: true,
+                                              controller: confirmPassword!,
+                                              enabled: isFieldEnabled,
+                                              validator: (val){}
+                                          ),
+                                          SizedBox(height: 20,),
+                                          MyButton(
+                                              onPressed: () {
+                                                if (!isFieldEnabled) return;
+
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    duration: Duration(seconds: 1),
+                                                    content: Text("تم تغيير كلمة المرور"),
+                                                  ),
+                                                );
+                                              },
+                                              label: "تغيير كلمة المرور",
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20)
+                                              ),
+                                              fontSize: 20,
+                                              btnColor: isFieldEnabled ? Colors.blueAccent : Colors.grey
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                        }
+                    );
+                  },
                   child: Text(
                     "تغيير كلمة المرور",
                     style: TextStyle(
