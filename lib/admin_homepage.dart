@@ -131,7 +131,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       //زر لعرض قائمة المرضى المسجلين بالتطبيق
                       Expanded(
                         child: MyButton(
-                            onPressed: (){},
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("patientList");
+                            },
                             btnColor: Colors.blueAccent,
                             fontSize: 18,
                             label: "مرضى المستوصف",
@@ -141,7 +143,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       // زر لعرض قائمة أطباء المستوصف
                       Expanded(
                         child:MyButton(
-                            onPressed: (){},
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("doctorsList");
+                            },
                             btnColor: Colors.blueAccent,
                             fontSize: 18,
                             label: "أطباء المستوصف",

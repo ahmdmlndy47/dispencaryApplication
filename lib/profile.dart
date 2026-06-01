@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dispensary/components/input_field.dart';
 import 'package:dispensary/components/main_button.dart';
 import 'package:flutter/material.dart';
@@ -251,7 +252,7 @@ class _MyProfileState extends State<MyProfile> {
                                           MyButton(
                                               onPressed: () {
                                                 if (!isFieldEnabled) return;
-
+                                                Navigator.of(context).pop();
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(
                                                     duration: Duration(seconds: 1),
@@ -305,43 +306,57 @@ class _MyProfileState extends State<MyProfile> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: (){
-                  showDialog(
+                  AwesomeDialog(
                       context: context,
-                      builder: (context){
-                        return AlertDialog(
-                          title: Text("هل أنت متأكد من تسجيل الخروج؟"),
-                          actionsAlignment: MainAxisAlignment.spaceBetween,
-                          actions: [
-                            TextButton(
-                                onPressed: (){
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  "إلغاء",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.w400
-                                  ),
-                                )
-                            ),
-                            TextButton(
-                                onPressed: (){
-                                  Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
-                                },
-                                child: Text(
-                                  "تأكيد",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w400
-                                  ),
-                                )
-                            ),
-                          ],
-                        );
-                      }
-                      );
+                      title: "تسجيل الخروج",
+                      desc: "هل أنت متأكد من تسجيل الخروج",
+                      dialogType: DialogType.question,
+                      showCloseIcon: true,
+                      animType: AnimType.rightSlide,
+                      btnOkOnPress: (){
+                        Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
+                      },
+                      btnCancelOnPress: (){},
+                      btnOkText: "نعم",
+                      btnCancelText: "لا"
+                  ).show();
+                  // showDialog(
+                  //     context: context,
+                  //     builder: (context){
+                  //       return AlertDialog(
+                  //         title: Text("هل أنت متأكد من تسجيل الخروج؟"),
+                  //         actionsAlignment: MainAxisAlignment.spaceBetween,
+                  //         actions: [
+                  //           TextButton(
+                  //               onPressed: (){
+                  //                 Navigator.of(context).pop();
+                  //               },
+                  //               child: Text(
+                  //                 "إلغاء",
+                  //                 style: TextStyle(
+                  //                   fontSize: 14,
+                  //                   color: Colors.red,
+                  //                   fontWeight: FontWeight.w400
+                  //                 ),
+                  //               )
+                  //           ),
+                  //           TextButton(
+                  //               onPressed: (){
+                  //                 Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
+                  //               },
+                  //               child: Text(
+                  //                 "تأكيد",
+                  //                 style: TextStyle(
+                  //                     fontSize: 14,
+                  //                     color: Colors.green,
+                  //                     fontWeight: FontWeight.w400
+                  //                 ),
+                  //               )
+                  //           ),
+                  //         ],
+                  //       );
+                  //     }
+                  //     );
                 },
                 child: Text(
                   "تسجيل الخروج",

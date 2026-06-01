@@ -1,8 +1,10 @@
 import 'package:dispensary/add_doctor_page.dart';
 import 'package:dispensary/add_patient_page.dart';
 import 'package:dispensary/admin_homepage.dart';
+import 'package:dispensary/doctors_list.dart';
 import 'package:dispensary/homepage.dart';
 import 'package:dispensary/login.dart';
+import 'package:dispensary/patients_list.dart';
 import 'package:dispensary/signup.dart';
 import 'package:flutter/material.dart';
 import 'log_sign_page.dart';
@@ -15,7 +17,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp( MaterialApp(
-    home: Homepage(),
+    home: AdminHomepage(),
     theme: ThemeData(
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.blueAccent,
@@ -45,6 +47,8 @@ void main() async {
       "logOrSignPage" : (context) => LogOrSignPage(),
       "loginPage" : (context) => Login(),
       "signupPage" : (context) => SignUpPage(),
+      "patientList" : (context) => PatientsList(),
+      "doctorsList" : (context) => DoctorsList()
     },
   ));
 }
