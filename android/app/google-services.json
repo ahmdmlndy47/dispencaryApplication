@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "243711370792",
+    "project_id": "fir-course-15c17",
+    "storage_bucket": "fir-course-15c17.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243711370792:android:8e2e63d48a22fb2d8e371d",
+        "android_client_info": {
+          "package_name": "com.example.dispensary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuh_lbWGiuArTL8y79gYwl22Y05BXxN5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
