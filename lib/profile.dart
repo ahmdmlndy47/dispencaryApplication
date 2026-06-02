@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dispensary/components/input_field.dart';
 import 'package:dispensary/components/main_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -314,6 +315,7 @@ class _MyProfileState extends State<MyProfile> {
                       showCloseIcon: true,
                       animType: AnimType.rightSlide,
                       btnOkOnPress: (){
+                        FirebaseAuth.instance.signOut();
                         Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
                       },
                       btnCancelOnPress: (){},

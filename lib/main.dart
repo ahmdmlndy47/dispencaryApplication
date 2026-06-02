@@ -6,6 +6,7 @@ import 'package:dispensary/homepage.dart';
 import 'package:dispensary/login.dart';
 import 'package:dispensary/patients_list.dart';
 import 'package:dispensary/signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'log_sign_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +18,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp( MaterialApp(
-    home: AdminHomepage(),
+    home: FirebaseAuth.instance.currentUser == null ? LogOrSignPage() : Homepage(),
     theme: ThemeData(
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.blueAccent,
