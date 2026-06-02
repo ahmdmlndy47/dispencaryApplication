@@ -18,7 +18,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp( MaterialApp(
-    home: FirebaseAuth.instance.currentUser == null ? LogOrSignPage() : Homepage(),
+    home: AdminHomepage(),
+    // home: FirebaseAuth.instance.currentUser == null ? LogOrSignPage() : Homepage(),
     theme: ThemeData(
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.blueAccent,
