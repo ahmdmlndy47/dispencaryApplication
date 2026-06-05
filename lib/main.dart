@@ -17,8 +17,13 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp( MaterialApp(
-    home: AdminHomepage(),
+  runApp(MaterialApp(
+    home: FirebaseAuth.instance.currentUser == null
+        ? LogOrSignPage()
+        : FirebaseAuth.instance.currentUser!.email ==
+        "ahmdmlndy19@gmail.com"
+        ? AdminHomepage()
+        : Homepage(),
     // home: FirebaseAuth.instance.currentUser == null ? LogOrSignPage() : Homepage(),
     theme: ThemeData(
       appBarTheme: AppBarTheme(

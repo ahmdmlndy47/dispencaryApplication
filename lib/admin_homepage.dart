@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dispensary/components/card_widget.dart';
 import 'package:dispensary/components/input_field.dart';
 import 'package:dispensary/components/main_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 class AdminHomepage extends StatefulWidget {
   const AdminHomepage({super.key});
@@ -56,6 +57,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
         actions: [
           ElevatedButton.icon(
             onPressed: (){
+              FirebaseAuth.instance.signOut();
               Navigator.of(context).pushNamed("logOrSignPage");
             },
             style: ButtonStyle(

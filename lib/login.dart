@@ -92,7 +92,9 @@ class _LoginState extends State<Login> {
                                 email: email.text,
                                 password: password.text
                             );
-                            Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route)=>false);
+                            credential.user!.email == "ahmdmlndy19@gmail.com"
+                                ? Navigator.of(context).pushNamedAndRemoveUntil("adminHomepage", (route)=>false)
+                                : Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route)=>false);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'invalid-credential') {
                               AwesomeDialog(
