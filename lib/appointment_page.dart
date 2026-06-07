@@ -125,11 +125,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         Container(
                           decoration: BoxDecoration(
                               border: BoxBorder.all(
-                                  color: Colors.red,
+                                  color: Colors.blueGrey,
                                   width: 2
                               ),
                               borderRadius: BorderRadius.circular(20),
-                              color: Colors.black
+                              color: Colors.blueAccent
                           ),
                           padding: EdgeInsets.symmetric(vertical: 10,horizontal: 30),
                           child: Column(
@@ -142,7 +142,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 18,
-                                    color: Colors.red
+                                    color: Colors.white
                                 ),
                               ),
                               SizedBox(height: 10,),
@@ -224,10 +224,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     padding: EdgeInsets.symmetric(vertical: 10,horizontal: 50),
                     decoration: BoxDecoration(
                         border: BoxBorder.all(
-                            color: Colors.red,
+                            color: Colors.transparent,
                             width: 2
                         ),
-                        color: Colors.black,
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -241,7 +241,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     child: Text(
                       "لا يوجد موعد حالي",
                       style: TextStyle(
-                          color: Colors.red,
+                          color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.w600
                       ),

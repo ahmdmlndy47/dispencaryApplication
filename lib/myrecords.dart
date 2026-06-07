@@ -105,27 +105,56 @@ class _MyRecordsState extends State<MyRecords> {
           child: ListView(
             children: [
               //زر البحث للبحث عن سجل بواسطة التاريخ
-              ElevatedButton.icon(
-                onPressed: (){
+              // ElevatedButton.icon(
+              //   onPressed: (){
+              //     showSearch(context: context, delegate: MySearch());
+              //   },
+              //   label: Text(
+              //     "أدخل تاريخ السجل",
+              //     style: TextStyle(
+              //       fontSize: 18,
+              //       fontWeight: FontWeight.w500,
+              //       color: Colors.white
+              //     ),
+              //   ),
+              //   icon: Icon(Icons.search),
+              //   style: ButtonStyle(
+              //     shadowColor: WidgetStatePropertyAll(Colors.grey),
+              //     elevation: WidgetStatePropertyAll(5),
+              //     padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 15,horizontal: 30)),
+              //     backgroundColor: WidgetStatePropertyAll(Colors.blue.shade600),
+              //     iconColor: WidgetStatePropertyAll(Colors.white),
+              //     iconSize: WidgetStatePropertyAll(26),
+              //     iconAlignment: IconAlignment.end
+              //   ),
+              // ),
+              InkWell(
+                onTap: (){
                   showSearch(context: context, delegate: MySearch());
                 },
-                label: Text(
-                  "أدخل تاريخ السجل",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(color: Colors.grey,offset: Offset(-5, 5),blurRadius: 5)
+                    ],
+                    color: Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(40)
                   ),
-                ),
-                icon: Icon(Icons.search),
-                style: ButtonStyle(
-                  shadowColor: WidgetStatePropertyAll(Colors.grey),
-                  elevation: WidgetStatePropertyAll(5),
-                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 15,horizontal: 30)),
-                  backgroundColor: WidgetStatePropertyAll(Colors.blue.shade600),
-                  iconColor: WidgetStatePropertyAll(Colors.white),
-                  iconSize: WidgetStatePropertyAll(26),
-                  iconAlignment: IconAlignment.end
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.search,color: Colors.blueAccent,),
+                      Text(
+                        "ابحث عن سجلك باستخدام التاريخ",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 10,),
@@ -349,17 +378,19 @@ class MySearch extends SearchDelegate{
         onPressed: (){
           close(context, null);
         },
-        icon: Icon(Icons.arrow_back,color: Colors.blueAccent,)),
+        icon: Icon(Icons.arrow_back,color: Colors.black,)),
     ];
   }
 
   @override
   Widget? buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: (){
-          query = "";
-        },
-        icon: Icon(Icons.close,color: Colors.red,));
+    if(query.isNotEmpty) {
+      return IconButton(
+          onPressed: () {
+            query = "";
+          },
+          icon: Icon(Icons.close, color: Colors.black,));
+    }else {return null;}
   }
 
   @override

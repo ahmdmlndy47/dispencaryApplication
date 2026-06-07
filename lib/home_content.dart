@@ -130,7 +130,7 @@ class _HomeContentState extends State<HomeContent> {
                                 //اليرت الحجز
                                 return Dialog(
                                   elevation: 7,
-                                  backgroundColor: Colors.black,
+                                  backgroundColor: Colors.white,
                                   child: Directionality(
                                     textDirection: TextDirection.rtl,
                                     child: Container(
@@ -147,7 +147,7 @@ class _HomeContentState extends State<HomeContent> {
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 20,
-                                                  color: Colors.white,
+                                                  color: Colors.blueAccent,
                                                   fontWeight: FontWeight.bold
                                               ),
                                             ),
