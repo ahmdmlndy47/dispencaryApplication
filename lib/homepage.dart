@@ -4,7 +4,9 @@ import 'package:dispensary/myrecords.dart';
 import 'package:dispensary/profile.dart';
 import 'package:flutter/material.dart';
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  final String countryId;
+  final String disHomePageId;
+  const Homepage({super.key, required this.disHomePageId, required this.countryId});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -15,11 +17,11 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   int _current = 3;
 
- List<Widget> widgets = [
+ late List<Widget> widgets = [
    MyProfile(),
    MyRecords(),
    AppointmentPage(),
-   HomeContent(),
+   HomeContent(disId: widget.disHomePageId,countryId: widget.countryId,),
  ];
   @override
   Widget build(BuildContext context) {

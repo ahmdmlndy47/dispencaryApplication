@@ -1,6 +1,7 @@
 import 'package:dispensary/add_doctor_page.dart';
 import 'package:dispensary/add_patient_page.dart';
 import 'package:dispensary/admin_homepage.dart';
+import 'package:dispensary/countries.dart';
 import 'package:dispensary/doctors_list.dart';
 import 'package:dispensary/homepage.dart';
 import 'package:dispensary/login.dart';
@@ -18,12 +19,16 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MaterialApp(
-    home: FirebaseAuth.instance.currentUser == null
-        ? LogOrSignPage()
-        : FirebaseAuth.instance.currentUser!.email ==
-        "ahmdmlndy19@gmail.com"
-        ? AdminHomepage()
-        : Homepage(),
+    home: FirebaseAuth.instance.currentUser == null ?
+    LogOrSignPage()
+    : FirebaseAuth.instance.currentUser!.email == "ahmdmlndy19@gmail.com"
+    ? AdminHomepage() : Countries(),
+    // home: FirebaseAuth.instance.currentUser == null
+    //     ? LogOrSignPage()
+    //     : FirebaseAuth.instance.currentUser!.email ==
+    //     "ahmdmlndy19@gmail.com"
+    //     ? AdminHomepage()
+    //     : Countries(),
     // home: FirebaseAuth.instance.currentUser == null ? LogOrSignPage() : Homepage(),
     theme: ThemeData(
       appBarTheme: AppBarTheme(
@@ -47,7 +52,6 @@ void main() async {
     ),
     debugShowCheckedModeBanner: false,
     routes: {
-      "homepage" : (context) => Homepage(),
       "adminHomepage" : (context)=> AdminHomepage(),
       "addPatientPage" : (context)=> AddPatientPage(),
       "addDoctorPage" : (context)=> AddDoctorPage(),

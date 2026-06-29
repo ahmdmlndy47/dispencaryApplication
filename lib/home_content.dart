@@ -1,53 +1,38 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'components/card_widget.dart';
 //  الصفحة الرئيسية للمريض الخاصة بمحتوى الصفحة الرئيسية
 class HomeContent extends StatefulWidget {
-  const HomeContent({super.key});
+  final String countryId;
+  final String disId;
+  const HomeContent({super.key, required this.disId, required this.countryId});
 
   @override
   State<HomeContent> createState() => _HomeContentState();
 }
 
 class _HomeContentState extends State<HomeContent> {
-  List clinics = [
-    {
-      "clinicName" : "عيادة الأطفال",
-      "docName" : "د.سمير خضورة",
-      "patientNum" : 23
-    },
-    {
-      "clinicName" : "العيادة الداخلية",
-      "docName" : "د.عائد عيدالله",
-      "patientNum" : 5
-    },
-    {
-      "clinicName" : "العيادة الصدرية",
-      "docName" : "د.فداء علواني",
-      "patientNum" : 21
-    },
-    {
-      "clinicName" : "العيادة العينية",
-      "docName" : "د.مي شهاب",
-      "patientNum" : 18
-    },
-    {
-      "clinicName" : "عيادة الأسنان",
-      "docName" : "د.إيفا حنينو",
-      "patientNum" : 11
-    },
-    {
-      "clinicName" : "عيادة الأذنية",
-      "docName" : "د.بسام شحادة",
-      "patientNum" : 9
-    },
-    {
-      "clinicName" : "العيادة الجلدية",
-      "docName" : "د.عادل اسماعيل",
-      "patientNum" : 30
-    },
-  ];
+  //مصفوفة لتخزين المجافظات المأخوذة من الداتا بيس
+  List<QueryDocumentSnapshot> clinics = [];
+  //متغير لتحديد فيما اذا تم جلب البيانات او لا
+  bool isLoading = true;
+  //تابع جلب البيانات
+  getData() async{
+    QuerySnapshot snapshot =await FirebaseFirestore.instance.collection("countries")
+        .doc(widget.countryId).collection("dispensaries")
+        .doc(widget.disId).collection("clinics").get();
+    clinics.addAll(snapshot.docs);
+    setState(() {
+      isLoading = false;
+    });
+  }
+  @override
+  initState() {
+    getData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +42,11 @@ class _HomeContentState extends State<HomeContent> {
         title: Text("الصفحة الرئيسية",),
       ),
       //جسم الصفحة
-      body: Container(
+      body:
+      //في حال لم يتم جلب البيانات ستظهر علامة تدل على التحميل
+      isLoading ? Center(child: CircularProgressIndicator(),)
+      //في حال تم جلب البيانات سيتم عرض محتوى الصفحة والذي هو المحافظات
+      : Container(
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
