@@ -44,6 +44,36 @@ class _DispensariesPageState extends State<DispensariesPage> {
       body:
       //في حال لم يتم جلب البيانات ستظهر علامة تدل على التحميل
       isLoading ? Center(child: CircularProgressIndicator(),)
+      : data.isEmpty
+        ? Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    offset: Offset(-5, 5),
+                    blurRadius: 5
+                  ),
+                ],
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Text(
+                "التطبيق لا يتضمن أي مستوصف في هذه المحافظة",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent
+                ),
+              ),
+            ),
+          ),),
+        )
       //في حال تم جلب البيانات سيتم عرض محتوى الصفحة والذي هو المحافظات
       : Padding(
         padding: const EdgeInsets.symmetric(
