@@ -22,7 +22,7 @@ void main() async {
     home: FirebaseAuth.instance.currentUser == null ?
     LogOrSignPage()
     : FirebaseAuth.instance.currentUser!.email == "ahmdmlndy19@gmail.com"
-    ? AdminHomepage() : Countries(),
+    ? AdminHomepage() : Homepage(),
     // home: FirebaseAuth.instance.currentUser == null
     //     ? LogOrSignPage()
     //     : FirebaseAuth.instance.currentUser!.email ==
@@ -52,6 +52,7 @@ void main() async {
     ),
     debugShowCheckedModeBanner: false,
     routes: {
+      "countries" : (context) => Countries(),
       "adminHomepage" : (context)=> AdminHomepage(),
       "addPatientPage" : (context)=> AddPatientPage(),
       "addDoctorPage" : (context)=> AddDoctorPage(),
@@ -59,7 +60,8 @@ void main() async {
       "loginPage" : (context) => Login(),
       "signupPage" : (context) => SignUpPage(),
       "patientList" : (context) => PatientsList(),
-      "doctorsList" : (context) => DoctorsList()
+      "doctorsList" : (context) => DoctorsList(),
+      "homepage" : (context) => Homepage()
     },
   ));
 }

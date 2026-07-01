@@ -1,13 +1,15 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'components/card_widget.dart';
 //  الصفحة الرئيسية للمريض الخاصة بمحتوى الصفحة الرئيسية
 class HomeContent extends StatefulWidget {
+  final String disName;
   final String countryId;
   final String disId;
-  const HomeContent({super.key, required this.disId, required this.countryId});
+  const HomeContent({super.key, required this.disId, required this.countryId, required this.disName});
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -39,7 +41,7 @@ class _HomeContentState extends State<HomeContent> {
       appBar: AppBar(
         centerTitle: true,
         //عنوان الصفحة
-        title: Text("الصفحة الرئيسية",),
+        title: Text(widget.disName,),
       ),
       //جسم الصفحة
       body:
@@ -187,13 +189,54 @@ class _HomeContentState extends State<HomeContent> {
                                                         dialogType: DialogType.question,
                                                         showCloseIcon: true,
                                                         animType: AnimType.rightSlide,
-                                                        btnOkOnPress: (){
-                                                          messenger.showSnackBar(
-                                                              SnackBar(
-                                                                  content: Text("تم الحجز"),
-                                                                  duration: Duration(seconds: 1)
+                                                        btnOkOnPress: ()async{
+                                                          //عند تأكيد الحجز
+                                                          //نا يتم طلب الحصول على بيانات المريض
+                                                          final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("UID",isEqualTo: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+                                                          //في حال كان المريض يملك موعد لن يتمكن من حجز موعد آخر وسيتم إظهار رسالة توضيحية
+                                                          if(patient.docs.first["hasAppoint"]){
+                                                            //الرسالة
+                                                            AwesomeDialog(
+                                                              context: parentContext,
+                                                              title: "لديك موعد حالي لا يمكنك الحجز الآن",
+                                                              titleTextStyle: TextStyle(
+                                                                fontSize: 22,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Colors.red
                                                               )
-                                                          );
+                                                            ).show();
+                                                          }
+                                                          //لن يتمكن المريض أيضا من الحجز في حال تم حظره وسيتم إظهلر رساة توضيحية
+                                                          else if(!patient.docs.first["available"]){
+                                                            //الرسالة
+                                                            AwesomeDialog(
+                                                                context: parentContext,
+                                                                title: "تم حظرك لا يمكنك الحجز يرجى مراجعة المستوصف",
+                                                                titleTextStyle: TextStyle(
+                                                                    fontSize: 22,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: Colors.red
+                                                                )
+                                                            ).show();
+                                                          }else{
+                                                            //عند نجاح الحجز سيتم التعديل على بيانات المريض لجعله يمتلك موعد
+                                                            patient.docs.first.reference.update(
+                                                                {
+                                                                  "hasAppoint" : true
+                                                                });
+                                                            //عند التأكيد سيتم إضافة الموعد لبيانات المريض
+                                                            await patient.docs.first.reference.collection("appointment").add({
+                                                              "appointClinic" : clinics[index]["clinicName"],
+                                                              "appointDis" : widget.disName,
+                                                              "appointNum" : clinics[index]["patientNum"]
+                                                            });
+                                                            messenger.showSnackBar(
+                                                                SnackBar(
+                                                                    content: Text("تم الحجز"),
+                                                                    duration: Duration(seconds: 1)
+                                                                )
+                                                            );
+                                                          }
                                                         },
                                                         btnCancelOnPress: (){},
                                                         btnOkText: "نعم",

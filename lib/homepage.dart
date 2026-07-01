@@ -1,12 +1,14 @@
 import 'package:dispensary/appointment_page.dart';
+import 'package:dispensary/countries.dart';
 import 'package:dispensary/home_content.dart';
+import 'package:dispensary/home_tap.dart';
 import 'package:dispensary/myrecords.dart';
 import 'package:dispensary/profile.dart';
 import 'package:flutter/material.dart';
 class Homepage extends StatefulWidget {
-  final String countryId;
-  final String disHomePageId;
-  const Homepage({super.key, required this.disHomePageId, required this.countryId});
+  // final String countryId;
+  // final String disHomePageId;
+  const Homepage({super.key,});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -21,7 +23,7 @@ class _HomepageState extends State<Homepage> {
    MyProfile(),
    MyRecords(),
    AppointmentPage(),
-   HomeContent(disId: widget.disHomePageId,countryId: widget.countryId,),
+   HomeTap()
  ];
   @override
   Widget build(BuildContext context) {

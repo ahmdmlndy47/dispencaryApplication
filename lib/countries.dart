@@ -17,8 +17,9 @@ class _CountriesState extends State<Countries> {
   //تابع جلب البيانات
   getData() async{
     QuerySnapshot snapshot =await FirebaseFirestore.instance.collection("countries").get();
-    data.addAll(snapshot.docs);
+    if(!mounted) return;
     setState(() {
+      data = snapshot.docs;
       isLoading = false;
     });
   }

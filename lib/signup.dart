@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
@@ -11,12 +12,27 @@ class SignUpPage extends StatefulWidget {
 }
 //صفحة إضافة ايميل و كلمة مرور
 class _SignUpPageState extends State<SignUpPage> {
+  //مصفوفة لتخزين المجافظات المأخوذة من الداتا بيس
+  List<QueryDocumentSnapshot> data = [];
+  bool isSigned = false;
   bool isEnabled = false;
-  GlobalKey<FormState> key = GlobalKey();
+  String? patientId;
+  GlobalKey<FormState> nationNumKey = GlobalKey();
+  GlobalKey<FormState> emailAndPassKey = GlobalKey();
   TextEditingController id = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
+  //تابع جلب البيانات
+  getData() async{
+    QuerySnapshot snapshot =await FirebaseFirestore.instance.collectionGroup("patients").get();
+    data.addAll(snapshot.docs);
+  }
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
-              key: key,
+              key: nationNumKey,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white38,
@@ -56,14 +72,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       radius: 20,
                       ),
                     ),
-                    //حقل إدخال رمز التحقق
+                    //حقل إدخال رمز الوطني
                     Text(
-                      "رمز التعريف",
+                      "الرمز الوطني",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     InputField(
-                      // validator: (val){},
-                      hint: "أدخل رمز التعريف",
+                      validator: (val){
+                        if(val == ""){
+                          return "لا يمكن ترك الحقل فارغا";
+                        }
+                      },
+                      hint: "أدخل الرمز الوطني",
                       icon: Icon(Icons.perm_identity),
                       isObscure: false,
                       controller: id,
@@ -73,9 +93,28 @@ class _SignUpPageState extends State<SignUpPage> {
                     Center(
                       child: MaterialButton(
                         onPressed: (){
-                          setState(() {
-                            isEnabled = true;
-                          });
+                          if(nationNumKey.currentState!.validate()){
+                            for(final doc in data){
+                              if(doc["nationNum"] == id.text){
+                                isSigned = true;
+                                break;
+                              }
+                            }
+                            if(isSigned == false){
+                              AwesomeDialog(
+                                context: context,
+                                title: "يجب ان تكون قد أنشأت حساب من قبل راجع المستوصف لإنشاء حساب",
+                                titleTextStyle: TextStyle(
+                                  color: Colors.red
+                                ),
+                                btnOkText: "موافق"
+                              ).show();
+                            }else{
+                              setState(() {
+                                isEnabled = true;
+                              });
+                            }
+                          }
                         },
                         padding: EdgeInsets.symmetric(vertical: 15,horizontal: 30),
                         shape: OutlineInputBorder(
@@ -93,71 +132,89 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     SizedBox(height: 20,),
-                    //حقل إضافة البريد الإلكتروني
-                    Text(
-                      "البريد الإلكتروني",
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Form(
+                      key: emailAndPassKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          //حقل إضافة البريد الإلكتروني
+                          Text(
+                            "البريد الإلكتروني",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          InputField(
+                            validator: (val){
+                              if(val == ""){
+                                return "لا يمكن ترك الحقل فارغاً";
+                              }else if(!val!.contains("@gmail.com")){
+                                return "البريد الإلكتوني غير صحيح";
+                              }
+                            },
+                            hint: "أدخل البريد الإلكتروني",
+                            icon: Icon(Icons.mail),
+                            isObscure: false,
+                            controller: email,
+                            enabled: isEnabled,),
+                          SizedBox(height: 20,),
+                          //حقل إضافة كلمة المرور
+                          Text(
+                            "كلمة المرور",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          InputField(
+                            validator: (val){
+                              if(val == ""){
+                                return "لا يمكن ترك الحقل فارغاً";
+                              }
+                            },
+                            hint: "أدخل كلمة المرور",
+                            icon: Icon(Icons.lock),
+                            isObscure: true,
+                            controller: password,
+                            enabled: isEnabled,),
+                          SizedBox(height: 20,),
+                          //حقل تأكيد كلمة المرور
+                          Text(
+                            "تأكيد كلمة المرور",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          InputField(
+                            validator: (val){
+                              if(val == ""){
+                                return "لا يمكن ترك الحقل فارغاً";
+                              } else if(confirmPassword.text != password.text){
+                                return "كلمتا المرور غير متطابقتان";
+                              }
+                            },
+                            hint: "أدخل كلمة المرور مرة أخرى",
+                            icon: Icon(Icons.lock),
+                            isObscure: true,
+                            controller: confirmPassword,
+                            enabled: isEnabled,),
+                        ],
+                      ),
                     ),
-                    InputField(
-                      validator: (val){
-                        if(val == ""){
-                          return "لا يمكن ترك الحقل فارغاً";
-                        }else if(!val!.contains("@gmail.com")){
-                          return "البريد الإلكتوني غير صحيح";
-                        }
-                      },
-                      hint: "أدخل البريد الإلكتروني",
-                      icon: Icon(Icons.mail),
-                      isObscure: false,
-                      controller: email,
-                      enabled: isEnabled,),
-                    SizedBox(height: 20,),
-                    //حقل إضافة كلمة المرور
-                    Text(
-                      "كلمة المرور",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    InputField(
-                      validator: (val){
-                        if(val == ""){
-                          return "لا يمكن ترك الحقل فارغاً";
-                        }
-                      },
-                      hint: "أدخل كلمة المرور",
-                      icon: Icon(Icons.lock),
-                      isObscure: true,
-                      controller: password,
-                      enabled: isEnabled,),
-                    SizedBox(height: 20,),
-                    //حقل تأكيد كلمة المرور
-                    Text(
-                      "تأكيد كلمة المرور",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    InputField(
-                      validator: (val){
-                        if(val == ""){
-                          return "لا يمكن ترك الحقل فارغاً";
-                        } else if(confirmPassword.text != password.text){
-                          return "كلمتا المرور غير متطابقتان";
-                        }
-                      },
-                      hint: "أدخل كلمة المرور مرة أخرى",
-                      icon: Icon(Icons.lock),
-                      isObscure: true,
-                      controller: confirmPassword,
-                      enabled: isEnabled,),
                     SizedBox(height: 10,),
+                    //زر إنشاء الحساب
                     Center(
                       child: MaterialButton(
                         onPressed: () async{
-                          if(key.currentState!.validate()){
+                          if(emailAndPassKey.currentState!.validate()){
                             try {
+                              //عند الضغط عليه سيتم إنشاء حساب بواسطة الإيميل والباسوورد
                               final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                 email: email.text,
                                 password: password.text,
+
                               );
+                              //بعدها سننتقل للصفحة الرئيسية
                               Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route) => false);
+                              //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
+                              final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: id.text).limit(1).get();
+                              await patient.docs.first.reference.update({
+                                "UID" : FirebaseAuth.instance.currentUser!.uid
+                              });
+
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
                                 AwesomeDialog(
@@ -177,7 +234,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ).show();
                               }
                             } catch (e) {
-
+                              print("Error $e");
                             }
                           }
                         },

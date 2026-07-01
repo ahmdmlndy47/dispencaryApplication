@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dispensary/components/card_widget.dart';
+import 'package:dispensary/home_content.dart';
 import 'package:dispensary/homepage.dart';
 import 'package:flutter/material.dart';
 //صفحة المستوصفات داخل المحافظة
@@ -94,7 +95,7 @@ class _DispensariesPageState extends State<DispensariesPage> {
                   onTap: (){
                     Navigator.of(context).
                     push(MaterialPageRoute(
-                        builder: (context) => Homepage(disHomePageId: data[index].id,countryId: widget.disId,)
+                        builder: (context) => HomeContent(disName: data[index]["disName"],disId: data[index].id,countryId: widget.disId,)
                     )
                     );
                   },
