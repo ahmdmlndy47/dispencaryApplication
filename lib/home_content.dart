@@ -163,7 +163,7 @@ class _HomeContentState extends State<HomeContent> {
                                                 child: TextButton(
                                                   //عند الضغط عليه سيتم إزالة الاليرت
                                                     onPressed: (){
-                                                      Navigator.of(context).pop();
+                                                      Navigator.of(dialogContext).pop();
                                                     },
                                                     child: Text(
                                                       "إلغاء",
@@ -192,7 +192,11 @@ class _HomeContentState extends State<HomeContent> {
                                                         btnOkOnPress: ()async{
                                                           //عند تأكيد الحجز
                                                           //نا يتم طلب الحصول على بيانات المريض
-                                                          final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("UID",isEqualTo: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+                                                          final patient = await FirebaseFirestore.instance.collection("countries")
+                                                              .doc(widget.countryId).collection("dispensaries")
+                                                              .doc(widget.disId).collection("patients")
+                                                              .where("UID",isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                                                              .limit(1).get();
                                                           //في حال كان المريض يملك موعد لن يتمكن من حجز موعد آخر وسيتم إظهار رسالة توضيحية
                                                           if(patient.docs.first["hasAppoint"]){
                                                             //الرسالة

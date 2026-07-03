@@ -1,6 +1,7 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dispensary/components/main_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,10 @@ class _LoginState extends State<Login> {
                                 email: email.text,
                                 password: password.text
                             );
-                            credential.user!.email == "ahmdmlndy19@gmail.com"
+                           final admins =  await FirebaseFirestore.instance.collectionGroup("dispensaries")
+                                .where("admins",arrayContains: credential.user!.uid)
+                                .limit(1).get();
+                            admins.docs.length != 0
                                 ? Navigator.of(context).pushNamedAndRemoveUntil("adminHomepage", (route)=>false)
                                 : Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route)=>false);
                           } on FirebaseAuthException catch (e) {

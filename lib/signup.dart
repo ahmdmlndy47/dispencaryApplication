@@ -208,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                               );
                               //بعدها سننتقل للصفحة الرئيسية
-                              Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route) => false);
+                              Navigator.of(context).pushNamedAndRemoveUntil("loginPage", (route) => false);
                               //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
                               final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: id.text).limit(1).get();
                               await patient.docs.first.reference.update({
