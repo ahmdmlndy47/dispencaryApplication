@@ -283,9 +283,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                               ),
                                                               items: doctors.map<DropdownMenuItem<String>>((doctor){
                                                                 return DropdownMenuItem(
-                                                                  value: doctor["name"],
+                                                                  value: "${doctor["firstName"]} ${doctor["lastName"]}",
                                                                   child: Text(
-                                                                    doctor["name"],
+                                                                    "${doctor["firstName"]} ${doctor["lastName"]}",
                                                                   ),
                                                                 );
                                                               }).toList(),
