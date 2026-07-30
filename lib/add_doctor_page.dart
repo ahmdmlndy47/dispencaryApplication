@@ -1,5 +1,8 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dispensary/components/input_field.dart';
 import 'package:dispensary/components/main_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 class AddDoctorPage extends StatefulWidget {
   const AddDoctorPage({super.key});
@@ -9,6 +12,7 @@ class AddDoctorPage extends StatefulWidget {
 }
 
 class _AddPatientPageState extends State<AddDoctorPage> {
+  
   List<String> specialties = [
     "الطب العام",
     "الطب الباطني",
@@ -41,7 +45,8 @@ class _AddPatientPageState extends State<AddDoctorPage> {
     "الطب الشرعي",
     "الطب الرياضي",
   ];
-  String? selectedSpeciality;
+  GlobalKey<FormState> key = GlobalKey();
+  late TextEditingController specializationController;
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
   late TextEditingController ageController;
@@ -49,6 +54,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
   late TextEditingController nationNumController;
   @override
   void initState() {
+    specializationController = TextEditingController();
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     ageController = TextEditingController();
@@ -59,6 +65,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
 
   @override
   void dispose() {
+    specializationController.dispose();
     firstNameController.dispose();
     lastNameController.dispose();
     ageController.dispose();
@@ -78,6 +85,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20),
         child: Form(
+          key: key,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -92,7 +100,11 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                     isObscure: false,
                     controller: firstNameController,
                     enabled: true,
-                    validator: (val){}
+                    validator: (val){
+                      if(val == ""){
+                        return "لا يمكن ترك الحقل فارغا";
+                      }
+                    }
                 ),
                 SizedBox(height: 20,),
                 //حقل إدخال الاسم الأخير
@@ -106,7 +118,11 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                     isObscure: false,
                     controller: lastNameController,
                     enabled: true,
-                    validator: (val){}
+                    validator: (val){
+                      if(val == ""){
+                        return "لا يمكن ترك الحقل فارغا";
+                      }
+                    }
                 ),
                 SizedBox(height: 20,),
                 //حقل إدخال العمر
@@ -120,7 +136,14 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                     isObscure: false,
                     controller: ageController,
                     enabled: true,
-                    validator: (val){}
+                    validator: (val){
+                      if(val == ""){
+                        return "لا يمكن ترك الحقل فارغا";
+                      }
+                      if(val!.contains(new RegExp(r'[a-zA-z]'))){
+                        return "إدخال خاطئ";
+                      }
+                    }
                 ),
                 SizedBox(height: 20,),
                 //حقل إدخال رقم الهاتف
@@ -134,7 +157,14 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                     isObscure: false,
                     controller: phoneNumController,
                     enabled: true,
-                    validator: (val){}
+                    validator: (val){
+                      if(val == ""){
+                        return "لا يمكن ترك الحقل فارغا";
+                      }
+                      if(val!.contains(new RegExp(r'[a-zA-z]'))){
+                        return "إدخال خاطئ";
+                      }
+                    }
                 ),
                 SizedBox(height: 20,),
                 //حقل إدخال الرقم الوطني
@@ -148,7 +178,14 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                     isObscure: false,
                     controller: nationNumController,
                     enabled: true,
-                    validator: (val){}
+                    validator: (val){
+                      if(val == ""){
+                        return "لا يمكن ترك الحقل فارغا";
+                      }
+                      if(val!.contains(new RegExp(r'[a-zA-z]'))){
+                        return "إدخال خاطئ";
+                      }
+                    }
                 ),
                 SizedBox(height: 20,),
                 //حقل إدخال الاختصاص
@@ -156,39 +193,138 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                   "الاختصاص",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.blue[50],
-                        prefixIcon: Icon(Icons.medical_information),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(40),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(40),
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        hintText: "الاختصاص",
-                      ),
-                      items: specialties.map<DropdownMenuItem<String>>((speciality){
-                        return DropdownMenuItem<String>(
-                          value: speciality,
-                          child: Text(speciality),
-                        );
-                      }).toList(),
-                      onChanged: (val){
-                        setState(() {
-                          selectedSpeciality = val;
-                        });
-                      }),
+                InputField(
+                    hint: "أدخل الاختصاص",
+                    icon: Icon(Icons.medical_information),
+                    isObscure: false,
+                    controller: specializationController,
+                    enabled: true,
+                    validator: (val){
+                      if(val == ""){
+                        return "لا يمكن ترك الحقل فارغا";
+                      }
+                    }
                 ),
+                // Directionality(
+                //   textDirection: TextDirection.rtl,
+                //   child: DropdownButtonFormField(
+                //       decoration: InputDecoration(
+                //         filled: true,
+                //         fillColor: Colors.blue[50],
+                //         prefixIcon: Icon(Icons.medical_information),
+                //         enabledBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(40),
+                //           borderSide: BorderSide(color: Colors.grey),
+                //         ),
+                //         focusedBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(40),
+                //           borderSide: BorderSide(color: Colors.grey),
+                //         ),
+                //         hintText: "الاختصاص",
+                //       ),
+                //       items: specialties.map<DropdownMenuItem<String>>((speciality){
+                //         return DropdownMenuItem<String>(
+                //           value: speciality,
+                //           child: Text(speciality),
+                //         );
+                //       }).toList(),
+                //       onChanged: (val){
+                //         setState(() {
+                //           selectedSpeciality = val;
+                //         });
+                //       }),
+                // ),
                 SizedBox(height: 20,),
                 //زر الإضافة
                 MyButton(
-                    onPressed: (){},
+                  //عند الضغط عليه والإدخال صحيح
+                    onPressed: () async{
+                      if(key.currentState!.validate()){
+                        final dispensary = await FirebaseFirestore.instance.collectionGroup("dispensaries").where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+                        //في حال لم يتم الوصول للمستوصف في قاعدة البيانات
+                        //يتم إظهار dialog يوضح الخطأ
+                        if(dispensary.docs.isEmpty){
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.error,
+                            title: "خطأ",
+                            desc: "لا يمكن إيجاد المستوصف الحالي لإضافة الطبيب فيه",
+                            titleTextStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red
+                            ),
+                            descTextStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.red
+                            ),
+                          ).show();
+                          //بعدها يتم تفريغ الحقول
+                          setState(() {
+                            firstNameController.text = "";
+                            ageController.text = "";
+                            lastNameController.text = "";
+                            specializationController.text = "";
+                            nationNumController.text = "";
+                            phoneNumController.text = "";
+                          });
+                          return;
+                        }
+                        final doc =await dispensary.docs.first.reference.collection("doctors").where("nationNum",isEqualTo: nationNumController.text).limit(1).get();
+                        //في حال لم يتم الوصول للأطباء في قاعدة البيانات
+                        //يتم إظهار dialog يوضح الخطأ
+                        if(doc.docs.isNotEmpty){
+                          AwesomeDialog(
+                            context: context,
+                            dialogType: DialogType.error,
+                            title: "خطأ",
+                            desc: "الطبيب موجود مسبقا",
+                            titleTextStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red
+                            ),
+                            descTextStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.red
+                            ),
+                          ).show();
+                          //بعدها يتم تفريغ الحقول
+                          setState(() {
+                            firstNameController.text = "";
+                            ageController.text = "";
+                            lastNameController.text = "";
+                            specializationController.text = "";
+                            nationNumController.text = "";
+                            phoneNumController.text = "";
+                          });
+                          return;
+                        }
+                        //في حال لم يحدث أي خطأ وتم الوصول للأطباء في المستوصف
+                        //يتم إضافة الطبيب للمستوصف
+                        await dispensary.docs.first.reference.collection("doctors").add(
+                            {
+                              "firstName" : firstNameController.text,
+                              "lastName" : lastNameController.text,
+                              "phoneNum" : phoneNumController.text,
+                              "nationNum" : nationNumController.text,
+                              "speciality" : specializationController.text,
+                            });
+                        //يتم إظهار رسالة تبين الإضافة بنجاح
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم إضافة الطبيب"),duration: Duration(milliseconds: 1500),));
+                        //بعدها يتم تفريغ الحقول
+                        setState(() {
+                          firstNameController.text = "";
+                          ageController.text = "";
+                          lastNameController.text = "";
+                          specializationController.text = "";
+                          nationNumController.text = "";
+                          phoneNumController.text = "";
+                        });
+                      }
+                    },
                     btnColor: Colors.blueAccent,
                     label: "إضافة الطبيب",
                     shape: RoundedRectangleBorder(

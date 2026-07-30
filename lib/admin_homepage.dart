@@ -12,36 +12,6 @@ class AdminHomepage extends StatefulWidget {
 }
 // الصفحة الرئيسية للآدمن
 class _AdminHomepageState extends State<AdminHomepage> {
-  // List clinics = [
-  //   {
-  //     "clinicName" : "عيادة الأطفال",
-  //     "docName" : "د.سمير خضورة",
-  //   },
-  //   {
-  //     "clinicName" : "العيادة الداخلية",
-  //     "docName" : "د.عائد عيدالله",
-  //   },
-  //   {
-  //     "clinicName" : "العيادة الصدرية",
-  //     "docName" : "د.فداء علواني",
-  //   },
-  //   {
-  //     "clinicName" : "العيادة العينية",
-  //     "docName" : "د.مي شهاب",
-  //   },
-  //   {
-  //     "clinicName" : "عيادة الأسنان",
-  //     "docName" : "د.إيفا حنينو",
-  //   },
-  //   {
-  //     "clinicName" : "عيادة الأذنية",
-  //     "docName" : "د.بسام شحادة",
-  //   },
-  //   {
-  //     "clinicName" : "العيادة الجلدية",
-  //     "docName" : "د.عادل اسماعيل",
-  //   },
-  // ];
   List<QueryDocumentSnapshot> doctors = [];
   final Stream<QuerySnapshot> stream =
       FirebaseFirestore.instance.collectionGroup("dispensaries")
