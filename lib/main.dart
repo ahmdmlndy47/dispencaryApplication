@@ -1,3 +1,4 @@
+import 'package:dispensary/add_clinic.dart';
 import 'package:dispensary/add_doctor_page.dart';
 import 'package:dispensary/add_patient_page.dart';
 import 'package:dispensary/admin_homepage.dart';
@@ -61,7 +62,8 @@ void main() async {
       "signupPage" : (context) => SignUpPage(),
       "patientList" : (context) => PatientsList(),
       "doctorsList" : (context) => DoctorsList(),
-      "homepage" : (context) => Homepage()
+      "homepage" : (context) => Homepage(),
+      "addClinic" : (context) => AddClinic()
     },
   ));
 }

@@ -122,6 +122,18 @@ class _AdminHomepageState extends State<AdminHomepage> {
                     ),
                     child: Column(
                       children: [
+                        //زر لإضافة عيادة
+                        MyButton(
+                            onPressed: (){
+                              Navigator.of(context).pushNamed("addClinic");
+                            },
+                            label: "إضافة عيادة",
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0)
+                            ),
+                            fontSize: 18,
+                            btnColor: Colors.blueAccent),
+                        SizedBox(height: 20,),
                         //أزرار إضافة المستخدمين
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
