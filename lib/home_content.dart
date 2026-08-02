@@ -191,7 +191,26 @@ class _HomeContentState extends State<HomeContent> {
                                                         animType: AnimType.rightSlide,
                                                         btnOkOnPress: ()async{
                                                           //عند تأكيد الحجز
-                                                          //نا يتم طلب الحصول على بيانات المريض
+                                                          //في حال كانت العيادة موقفة سيظهر dialog يوضح أنه لا يمكن الحجز الآن
+                                                          if(!clinics[index]["available"]){
+                                                            AwesomeDialog(
+                                                              context: parentContext,
+                                                              title: "خطأ",
+                                                              desc: "هذه العيادة موقفة مؤقتاً",
+                                                              titleTextStyle: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.bold,
+                                                                color: Colors.red
+                                                              ),
+                                                              descTextStyle: TextStyle(
+                                                                fontWeight: FontWeight.w400,
+                                                                fontSize: 16,
+                                                                color: Colors.red
+                                                              )
+                                                            ).show();
+                                                            return;
+                                                          }
+                                                          //هنا يتم طلب الحصول على بيانات المريض
                                                           final patient = await FirebaseFirestore.instance.collection("countries")
                                                               .doc(widget.countryId).collection("dispensaries")
                                                               .doc(widget.disId).collection("patients")

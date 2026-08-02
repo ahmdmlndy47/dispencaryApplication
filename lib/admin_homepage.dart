@@ -295,22 +295,164 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                 });
                                                               }),
                                                           SizedBox(height: 20,),
+                                                          //زر إيقاف العيادة
                                                           MyButton(
-                                                              onPressed: (){
+                                                              onPressed: () async{
                                                                 final messenger = ScaffoldMessenger.of(parentContext);
                                                                 Navigator.of(dialogContext).pop();
+                                                                //عند الضغط عليه سيتم إظهار dialog لتأكيد الإيقاف
                                                                 AwesomeDialog(
                                                                     context: parentContext,
-                                                                    title: "حذف عيادة",
-                                                                    desc: "هل انت متأكد من حذف العيادة",
-                                                                    dialogType: DialogType.error,
+                                                                    title: "إيقاف العيادة",
+                                                                    desc: "هل انت متأكد من إيقاف العيادة",
+                                                                    dialogType: DialogType.warning,
                                                                     animType: AnimType.rightSlide,
                                                                     btnCancelText: "لا",
                                                                     btnOkText: "نعم",
                                                                     showCloseIcon: true,
                                                                     btnCancelOnPress: (){},
-                                                                    btnOkOnPress: (){
-                                                                      clinics.data!.docs[index].reference.delete();
+                                                                    btnOkOnPress: () async{
+                                                                      //يتم الاختبار اولا في حال كانت العيادة تم إيقافها أم لا
+                                                                      if(clinics.data!.docs[index]["available"]) {
+                                                                        //عند التأكيد و العيادة غير موقفة سيتم تعديل بيانات العيادة لجعلها غير متاحة
+                                                                       await clinics
+                                                                            .data!
+                                                                            .docs[index]
+                                                                            .reference
+                                                                            .update(
+                                                                            {
+                                                                              "available": false,
+                                                                            });
+                                                                        //وثم إظهار رسالة لتوضيح الإيقاف
+                                                                        messenger
+                                                                            .showSnackBar(
+                                                                            SnackBar(
+                                                                              content: Text(
+                                                                                  "تم الإيقاف"),
+                                                                              duration: Duration(
+                                                                                  seconds: 1),
+                                                                            )
+                                                                        );
+                                                                      }
+                                                                      //في حال التأكيد وتم إيقاف العيادة سيتم إظهار dialog لتوضيح الخطأ
+                                                                      else{
+                                                                        AwesomeDialog(
+                                                                          context: parentContext,
+                                                                          dialogType: DialogType.error,
+                                                                          title: "خطأ",
+                                                                          desc: "تم إيقاف العيادة مسبقا",
+                                                                          titleTextStyle: TextStyle(
+                                                                            fontSize: 20,
+                                                                            color: Colors.red,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                          descTextStyle: TextStyle(
+                                                                            fontWeight: FontWeight.w400,
+                                                                            fontSize: 16,
+                                                                            color: Colors.red
+                                                                          )
+                                                                        ).show();
+                                                                      }
+                                                                    }
+                                                                ).show();
+                                                              },
+                                                              label: "إيقاف العيادة",
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(20)
+                                                              ),
+                                                              fontSize: 18,
+                                                              btnColor: Colors.red
+                                                          ),
+                                                          SizedBox(height: 20,),
+                                                          //زر تشغيل العيادة
+                                                          MyButton(
+                                                              onPressed: () async{
+                                                                final messenger = ScaffoldMessenger.of(parentContext);
+                                                                Navigator.of(dialogContext).pop();
+                                                                //عند الضغط عليه سيتم إظهار dialog لتأكيد الإيقاف
+                                                                AwesomeDialog(
+                                                                    context: parentContext,
+                                                                    title: "إيقاف العيادة",
+                                                                    desc: "هل انت متأكد من إيقاف العيادة",
+                                                                    dialogType: DialogType.warning,
+                                                                    animType: AnimType.rightSlide,
+                                                                    btnCancelText: "لا",
+                                                                    btnOkText: "نعم",
+                                                                    showCloseIcon: true,
+                                                                    btnCancelOnPress: (){},
+                                                                    btnOkOnPress: () async{
+                                                                      //يتم الاختبار اولا في حال كانت العيادة تم إيقافها أم لا
+                                                                      if(!clinics.data!.docs[index]["available"]) {
+                                                                        //عند التأكيد و العيادة  موقفة سيتم تعديل بيانات العيادة لجعلها  متاحة
+                                                                        await clinics
+                                                                            .data!
+                                                                            .docs[index]
+                                                                            .reference
+                                                                            .update(
+                                                                            {
+                                                                              "available": true,
+                                                                            });
+                                                                        //وثم إظهار رسالة لتوضيح التفعيل
+                                                                        messenger
+                                                                            .showSnackBar(
+                                                                            SnackBar(
+                                                                              content: Text(
+                                                                                  "تم التفعيل"),
+                                                                              duration: Duration(
+                                                                                  seconds: 1),
+                                                                            )
+                                                                        );
+                                                                      }
+                                                                      //في حال التأكيد ولم يتم إيقاف العيادة سيتم إظهار dialog لتوضيح الخطأ
+                                                                      else{
+                                                                        AwesomeDialog(
+                                                                            context: parentContext,
+                                                                            dialogType: DialogType.error,
+                                                                            title: "خطأ",
+                                                                            desc: " لم يتم إيقاف العيادة مسبقا",
+                                                                            titleTextStyle: TextStyle(
+                                                                              fontSize: 20,
+                                                                              color: Colors.red,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                            descTextStyle: TextStyle(
+                                                                                fontWeight: FontWeight.w400,
+                                                                                fontSize: 16,
+                                                                                color: Colors.red
+                                                                            )
+                                                                        ).show();
+                                                                      }
+                                                                    }
+                                                                ).show();
+                                                              },
+                                                              label: "تفعيل العيادة",
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(20)
+                                                              ),
+                                                              fontSize: 18,
+                                                              btnColor: Colors.green
+                                                          ),
+                                                          SizedBox(height: 20,),
+                                                          //زر حذف العيادة
+                                                          MyButton(
+                                                              onPressed: () async{
+                                                                final messenger = ScaffoldMessenger.of(parentContext);
+                                                                Navigator.of(dialogContext).pop();
+                                                                //عند الضغط عليه سيظهر ديالوغ لتأكيد الحذف
+                                                                AwesomeDialog(
+                                                                    context: parentContext,
+                                                                    title: "حذف عيادة",
+                                                                    desc: "هل انت متأكد من حذف العيادة",
+                                                                    dialogType: DialogType.warning,
+                                                                    animType: AnimType.rightSlide,
+                                                                    btnCancelText: "لا",
+                                                                    btnOkText: "نعم",
+                                                                    showCloseIcon: true,
+                                                                    btnCancelOnPress: (){},
+                                                                    btnOkOnPress: () async{
+                                                                      //عند تأكيد الحذف سيتم إزالة العيادة من قاعدة بيانات المستوصف
+                                                                      await clinics.data!.docs[index].reference.delete();
+                                                                      //وثم إظهار رسالة لتوضيح الحذف
                                                                       messenger.showSnackBar(
                                                                           SnackBar(
                                                                             content: Text("تم الحذف"),
@@ -329,7 +471,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                         ],
                                                       ),
                                                     ),),
-                                                  SizedBox(height: 80,),
+                                                  SizedBox(height: 20,),
                                                   //أزرار التأكيد و الإلغاء
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,6 +513,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                     }
                                                                    await clinics.data!.docs[index].reference.update(
                                                                         {"docName" : selectedDoc});
+                                                                    Navigator.of(dialogContext).pop();
                                                                    if(!mounted) return;
                                                                   }
                                                               ).show();
