@@ -14,6 +14,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   //مصفوفة لتخزين المجافظات المأخوذة من الداتا بيس
   List<QueryDocumentSnapshot> data = [];
+  bool haveEmail = false;
   bool isSigned = false;
   bool isEnabled = false;
   String? patientId;
@@ -96,6 +97,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           if(nationNumKey.currentState!.validate()){
                             for(final doc in data){
                               if(doc["nationNum"] == id.text){
+                                if(doc["UID"] != ""){
+                                  haveEmail = true;
+                                }
                                 isSigned = true;
                                 break;
                               }
@@ -109,7 +113,28 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                                 btnOkText: "موافق"
                               ).show();
-                            }else{
+                              id.text = "";
+                              //هنا سيتم التأكد إذا كان هذا الuser قد قام بإضافة ايميل مسبقا
+                            }else if(haveEmail){
+                                //في حال كان لديه ايميل سيظهر dialog يوضح الخظأ
+                                AwesomeDialog(
+                                  context: context,
+                                  dialogType: DialogType.error,
+                                  title: "خطأ",
+                                  desc: "هذا المستخدم يملك حساب مسبقا",
+                                  titleTextStyle: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red
+                                  ),
+                                  descTextStyle: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.red
+                                  ),
+                                ).show();
+                                id.text = "";
+                            } else{
                               setState(() {
                                 isEnabled = true;
                               });
@@ -209,8 +234,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               );
                               //بعدها سننتقل للصفحة الرئيسية
                               Navigator.of(context).pushNamedAndRemoveUntil("loginPage", (route) => false);
-                              //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
                               final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: id.text).limit(1).get();
+                              //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
                               await patient.docs.first.reference.update({
                                 "UID" : FirebaseAuth.instance.currentUser!.uid
                               });
