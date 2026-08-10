@@ -25,14 +25,21 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   //تابع جلب البيانات
-  getData() async{
-    QuerySnapshot snapshot =await FirebaseFirestore.instance.collectionGroup("patients").get();
-    data.addAll(snapshot.docs);
+  getData(String nationNum) async{
+    QuerySnapshot snapshot =await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: nationNum).limit(1).get();
+    data =  snapshot.docs;
   }
   @override
   void initState() {
-    getData();
     super.initState();
+  }
+  @override
+  void dispose() {
+    id.dispose();
+    email.dispose();
+    password.dispose();
+    confirmPassword.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -86,6 +93,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       hint: "أدخل الرمز الوطني",
                       icon: Icon(Icons.perm_identity),
+                      inputType: TextInputType.number,
                       isObscure: false,
                       controller: id,
                       enabled: true,),
@@ -93,17 +101,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     //زر التحقق
                     Center(
                       child: MaterialButton(
-                        onPressed: (){
+                        onPressed: ()async{
                           if(nationNumKey.currentState!.validate()){
-                            for(final doc in data){
-                              if(doc["nationNum"] == id.text){
-                                if(doc["UID"] != ""){
-                                  haveEmail = true;
-                                }
-                                isSigned = true;
-                                break;
+                            await getData(id.text);
+                            if(data.isNotEmpty){
+                              isSigned = true;
+                              if(data[0]["UID"] != ""){
+                                haveEmail = true;
                               }
                             }
+
                             if(isSigned == false){
                               AwesomeDialog(
                                 context: context,
@@ -114,8 +121,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                 btnOkText: "موافق"
                               ).show();
                               id.text = "";
-                              //هنا سيتم التأكد إذا كان هذا الuser قد قام بإضافة ايميل مسبقا
-                            }else if(haveEmail){
+                              return;
+                            }
+                            //هنا سيتم التأكد إذا كان هذا الuser قد قام بإضافة ايميل مسبقا
+                            if(haveEmail){
                                 //في حال كان لديه ايميل سيظهر dialog يوضح الخظأ
                                 AwesomeDialog(
                                   context: context,
@@ -134,11 +143,16 @@ class _SignUpPageState extends State<SignUpPage> {
                                   ),
                                 ).show();
                                 id.text = "";
-                            } else{
+                                setState(() {
+                                  haveEmail = false;
+                                });
+                                return;
+                            }
+
                               setState(() {
                                 isEnabled = true;
                               });
-                            }
+
                           }
                         },
                         padding: EdgeInsets.symmetric(vertical: 15,horizontal: 30),
@@ -177,6 +191,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             },
                             hint: "أدخل البريد الإلكتروني",
                             icon: Icon(Icons.mail),
+                            inputType: TextInputType.emailAddress,
                             isObscure: false,
                             controller: email,
                             enabled: isEnabled,),
@@ -194,6 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             },
                             hint: "أدخل كلمة المرور",
                             icon: Icon(Icons.lock),
+                            inputType: TextInputType.visiblePassword,
                             isObscure: true,
                             controller: password,
                             enabled: isEnabled,),
@@ -213,6 +229,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             },
                             hint: "أدخل كلمة المرور مرة أخرى",
                             icon: Icon(Icons.lock),
+                            inputType: TextInputType.visiblePassword,
                             isObscure: true,
                             controller: confirmPassword,
                             enabled: isEnabled,),
@@ -223,7 +240,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     //زر إنشاء الحساب
                     Center(
                       child: MaterialButton(
-                        onPressed: () async{
+                        onPressed: isEnabled ? () async{
                           if(emailAndPassKey.currentState!.validate()){
                             try {
                               //عند الضغط عليه سيتم إنشاء حساب بواسطة الإيميل والباسوورد
@@ -262,13 +279,13 @@ class _SignUpPageState extends State<SignUpPage> {
                               print("Error $e");
                             }
                           }
-                        },
+                        } : null,
                         padding: EdgeInsets.symmetric(vertical: 15,horizontal: 30),
                         shape: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100),
                             borderSide: BorderSide(color: Colors.transparent)
                         ),
-                        color: Colors.blueAccent,
+                        color: isEnabled  ? Colors.blueAccent : Colors.grey.shade600,
                         textColor: Colors.white,
                         minWidth: 300,
                         child: Text(

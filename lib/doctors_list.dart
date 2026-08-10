@@ -167,6 +167,7 @@ class _DoctorsListState extends State<DoctorsList> {
                                                         child: InputField(
                                                             hint: "${snapshot.data!.docs[index]["phoneNum"]}",
                                                             icon: Icon(Icons.phone),
+                                                            inputType: TextInputType.number,
                                                             isObscure: false,
                                                             controller: controllers[index]["phoneController"],
                                                             enabled: controllers[index]["phoneNumEnabled"],
@@ -210,6 +211,7 @@ class _DoctorsListState extends State<DoctorsList> {
                                                         child: InputField(
                                                             hint: "${snapshot.data!.docs[index]["nationNum"]}",
                                                             icon: Icon(Icons.numbers),
+                                                            inputType: TextInputType.number,
                                                             isObscure: false,
                                                             controller: controllers[index]["nationNumController"],
                                                             enabled: controllers[index]["nationNumEnabled"],

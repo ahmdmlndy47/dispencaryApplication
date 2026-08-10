@@ -105,6 +105,7 @@ class _AddClinicState extends State<AddClinic> {
                     hint: "أدخل اسم العيادة",
                     icon: Icon(Icons.medical_information),
                     isObscure: false,
+                    inputType: TextInputType.text,
                     controller: clinicName,
                     enabled: true,
                     validator: (val){

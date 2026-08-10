@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 class InputField extends StatefulWidget {
+  final TextInputType inputType;
   final String? Function(String?)? validator;
   final String hint;
   final Icon icon;
   final  bool isObscure;
   final TextEditingController controller;
   final bool enabled;
-  const InputField({super.key, required this.hint, required this.icon, required this.isObscure, required this.controller, required this.enabled,  this.validator});
+  const InputField({super.key, required this.hint, required this.icon, required this.isObscure, required this.controller, required this.enabled,  this.validator, required this.inputType});
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -27,7 +28,7 @@ class _InputFieldState extends State<InputField> {
         controller: widget.controller,
         textAlign: TextAlign.right,
         obscureText: secure,
-        keyboardType: TextInputType.visiblePassword,
+        keyboardType: widget.inputType,
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle(fontSize: 13, color: Colors.grey),
@@ -69,7 +70,7 @@ class _InputFieldState extends State<InputField> {
           enabled: widget.enabled,
       controller: widget.controller,
       textAlign: TextAlign.right,
-      keyboardType:TextInputType.emailAddress,
+      keyboardType: widget.inputType,
       decoration: InputDecoration(
       hintText: widget.hint,
       hintStyle: TextStyle(

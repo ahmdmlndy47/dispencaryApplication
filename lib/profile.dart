@@ -227,6 +227,7 @@ class _MyProfileState extends State<MyProfile> {
                                             InputField(
                                                 hint: "أدخل كلمة المرور القديمة",
                                                 icon: Icon(Icons.lock),
+                                                inputType: TextInputType.visiblePassword,
                                                 isObscure: true,
                                                 controller: oldPassword!,
                                                 enabled: true,
@@ -253,6 +254,7 @@ class _MyProfileState extends State<MyProfile> {
                                             InputField(
                                                 hint: "أدخل كلمة المرور الجديدة",
                                                 icon: Icon(Icons.lock),
+                                                inputType: TextInputType.visiblePassword,
                                                 isObscure: true,
                                                 controller: newPassword!,
                                                 enabled: isFieldEnabled,
@@ -266,6 +268,7 @@ class _MyProfileState extends State<MyProfile> {
                                             InputField(
                                                 hint: "أدخل كلمة المرور الجديدة مجدداً",
                                                 icon: Icon(Icons.lock),
+                                                inputType: TextInputType.number,
                                                 isObscure: true,
                                                 controller: confirmPassword!,
                                                 enabled: isFieldEnabled,
@@ -344,43 +347,6 @@ class _MyProfileState extends State<MyProfile> {
                           btnOkText: "نعم",
                           btnCancelText: "لا"
                       ).show();
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (context){
-                      //       return AlertDialog(
-                      //         title: Text("هل أنت متأكد من تسجيل الخروج؟"),
-                      //         actionsAlignment: MainAxisAlignment.spaceBetween,
-                      //         actions: [
-                      //           TextButton(
-                      //               onPressed: (){
-                      //                 Navigator.of(context).pop();
-                      //               },
-                      //               child: Text(
-                      //                 "إلغاء",
-                      //                 style: TextStyle(
-                      //                   fontSize: 14,
-                      //                   color: Colors.red,
-                      //                   fontWeight: FontWeight.w400
-                      //                 ),
-                      //               )
-                      //           ),
-                      //           TextButton(
-                      //               onPressed: (){
-                      //                 Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
-                      //               },
-                      //               child: Text(
-                      //                 "تأكيد",
-                      //                 style: TextStyle(
-                      //                     fontSize: 14,
-                      //                     color: Colors.green,
-                      //                     fontWeight: FontWeight.w400
-                      //                 ),
-                      //               )
-                      //           ),
-                      //         ],
-                      //       );
-                      //     }
-                      //     );
                     },
                     child: Text(
                       "تسجيل الخروج",

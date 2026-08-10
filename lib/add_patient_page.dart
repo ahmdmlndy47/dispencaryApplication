@@ -64,6 +64,7 @@ late TextEditingController nationNumController;
                 InputField(
                     hint: "أدخل الاسم الأول",
                     icon: Icon(Icons.person),
+                    inputType: TextInputType.name,
                     isObscure: false,
                     controller: firstNameController,
                     enabled: true,
@@ -82,6 +83,7 @@ late TextEditingController nationNumController;
                 InputField(
                     hint: "أدخل الاسم الأخير",
                     icon: Icon(Icons.person),
+                    inputType: TextInputType.name,
                     isObscure: false,
                     controller: lastNameController,
                     enabled: true,
@@ -100,6 +102,7 @@ late TextEditingController nationNumController;
                 InputField(
                     hint: "أدخل العمر",
                     icon: Icon(Icons.elderly),
+                    inputType: TextInputType.number,
                     isObscure: false,
                     controller: ageController,
                     enabled: true,
@@ -122,6 +125,7 @@ late TextEditingController nationNumController;
                 InputField(
                     hint: "أدخل رقم الهاتف",
                     icon: Icon(Icons.phone),
+                    inputType: TextInputType.number,
                     isObscure: false,
                     controller: phoneNumController,
                     enabled: true,
@@ -140,6 +144,7 @@ late TextEditingController nationNumController;
                 InputField(
                     hint: "أدخل الرقم الوطني",
                     icon: Icon(Icons.numbers),
+                    inputType: TextInputType.number,
                     isObscure: false,
                     controller: nationNumController,
                     enabled: true,

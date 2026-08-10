@@ -29,7 +29,8 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: widgets[_current],
+      body: IndexedStack( index: _current, children: widgets, ),
+      // body: widgets[_current],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _current,

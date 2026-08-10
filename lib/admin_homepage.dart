@@ -44,8 +44,21 @@ class _AdminHomepageState extends State<AdminHomepage> {
         actions: [
           ElevatedButton.icon(
             onPressed: (){
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context).pushNamed("logOrSignPage");
+              AwesomeDialog(
+                  context: context,
+                  title: "تسجيل الخروج",
+                  desc: "هل أنت متأكد من تسجيل الخروج",
+                  dialogType: DialogType.question,
+                  showCloseIcon: true,
+                  animType: AnimType.rightSlide,
+                  btnOkOnPress: (){
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
+                  },
+                  btnCancelOnPress: (){},
+                  btnOkText: "نعم",
+                  btnCancelText: "لا"
+              ).show();
             },
             style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(Colors.blueAccent.shade700)

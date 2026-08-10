@@ -97,6 +97,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 InputField(
                     hint: "أدخل الاسم الأول",
                     icon: Icon(Icons.person),
+                    inputType: TextInputType.name,
                     isObscure: false,
                     controller: firstNameController,
                     enabled: true,
@@ -115,6 +116,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 InputField(
                     hint: "أدخل الاسم الأخير",
                     icon: Icon(Icons.person),
+                    inputType: TextInputType.name,
                     isObscure: false,
                     controller: lastNameController,
                     enabled: true,
@@ -133,6 +135,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 InputField(
                     hint: "أدخل العمر",
                     icon: Icon(Icons.elderly),
+                    inputType: TextInputType.number,
                     isObscure: false,
                     controller: ageController,
                     enabled: true,
@@ -154,6 +157,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 InputField(
                     hint: "أدخل رقم الهاتف",
                     icon: Icon(Icons.phone),
+                    inputType: TextInputType.number,
                     isObscure: false,
                     controller: phoneNumController,
                     enabled: true,
@@ -175,6 +179,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 InputField(
                     hint: "أدخل الرقم الوطني",
                     icon: Icon(Icons.numbers),
+                    inputType: TextInputType.number,
                     isObscure: false,
                     controller: nationNumController,
                     enabled: true,
@@ -196,6 +201,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                 InputField(
                     hint: "أدخل الاختصاص",
                     icon: Icon(Icons.medical_information),
+                    inputType: TextInputType.text,
                     isObscure: false,
                     controller: specializationController,
                     enabled: true,
