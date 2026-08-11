@@ -318,6 +318,9 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                               "nationNum" : nationNumController.text,
                               "speciality" : specializationController.text,
                             });
+                        await dispensary.docs.first.reference.update({
+                          "doctors" : FieldValue.arrayUnion([nationNumController.text])
+                        });
                         //يتم إظهار رسالة تبين الإضافة بنجاح
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم إضافة الطبيب"),duration: Duration(milliseconds: 1500),));
                         //بعدها يتم تفريغ الحقول
