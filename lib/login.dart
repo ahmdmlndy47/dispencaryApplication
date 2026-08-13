@@ -98,8 +98,13 @@ class _LoginState extends State<Login> {
                            final admins =  await FirebaseFirestore.instance.collectionGroup("dispensaries")
                                 .where("admins",arrayContains: credential.user!.uid)
                                 .limit(1).get();
+                            final doctors =  await FirebaseFirestore.instance.collectionGroup("doctors")
+                                .where("UID",isEqualTo: credential.user!.uid)
+                                .limit(1).get();
                             admins.docs.length != 0
                                 ? Navigator.of(context).pushNamedAndRemoveUntil("adminHomepage", (route)=>false)
+                                : doctors.docs.length != 0
+                                ? Navigator.of(context).pushNamedAndRemoveUntil("doctorPage", (route)=>false)
                                 : Navigator.of(context).pushNamedAndRemoveUntil("homepage", (route)=>false);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'invalid-credential') {

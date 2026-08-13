@@ -25,8 +25,12 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   //تابع جلب البيانات
-  getData(String nationNum) async{
-    QuerySnapshot snapshot =await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: nationNum).limit(1).get();
+  getPatientData(String nationNum) async{
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: nationNum).limit(1).get();
+    data =  snapshot.docs;
+  }
+  getDoctorData(String nationNum) async{
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collectionGroup("doctors").where("nationNum",isEqualTo: nationNum).limit(1).get();
     data =  snapshot.docs;
   }
   @override
@@ -103,11 +107,19 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: MaterialButton(
                         onPressed: ()async{
                           if(nationNumKey.currentState!.validate()){
-                            await getData(id.text);
+                            await getPatientData(id.text);
                             if(data.isNotEmpty){
                               isSigned = true;
                               if(data[0]["UID"] != ""){
                                 haveEmail = true;
+                              }
+                            }else {
+                              await getDoctorData(id.text);
+                              if(data.isNotEmpty){
+                                isSigned = true;
+                                if(data[0]["UID"] != ""){
+                                  haveEmail = true;
+                                }
                               }
                             }
 
@@ -251,11 +263,26 @@ class _SignUpPageState extends State<SignUpPage> {
                               );
                               //بعدها سننتقل للصفحة الرئيسية
                               Navigator.of(context).pushNamedAndRemoveUntil("loginPage", (route) => false);
+                              final doctor = await FirebaseFirestore.instance.collectionGroup("doctors").where("nationNum",isEqualTo: id.text).limit(1).get();
                               final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: id.text).limit(1).get();
                               //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
+                              if(patient.docs.isNotEmpty){
                               await patient.docs.first.reference.update({
                                 "UID" : FirebaseAuth.instance.currentUser!.uid
-                              });
+                              });}
+                              else if(doctor.docs.isNotEmpty){
+                                await doctor.docs.first.reference.update({
+                                  "UID" : FirebaseAuth.instance.currentUser!.uid
+                                });}
+                              else{
+                                AwesomeDialog(
+                                    context: context,
+                                    title: "خطأ ",
+                                    desc: "حدث خطأ ما",
+                                    animType: AnimType.rightSlide,
+                                    dialogType: DialogType.error
+                                ).show();
+                              }
 
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {

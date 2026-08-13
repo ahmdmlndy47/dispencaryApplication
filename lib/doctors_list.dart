@@ -21,6 +21,7 @@ class _DoctorsListState extends State<DoctorsList> {
   List controllers = [];
   //تابع جلب الأطباء وتهيئة الstream
   getDoctors() async{
+    controllers.clear();
     final snapshot = await FirebaseFirestore.instance.collectionGroup("dispensaries").where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
     if (snapshot.docs.isEmpty) {
       return;
@@ -172,10 +173,10 @@ class _DoctorsListState extends State<DoctorsList> {
                                                             controller: controllers[index]["phoneController"],
                                                             enabled: controllers[index]["phoneNumEnabled"],
                                                           validator: (val){
-                                                            if(val == ""){
+                                                            if(controllers[index]["phoneNumEnabled"] && val == ""){
                                                               return "لا يمكن ترك الحقل فارغا";
                                                             }
-                                                            if(val!.contains(new RegExp(r'[a-zA-z]'))){
+                                                            if(controllers[index]["phoneNumEnabled"] && val!.contains(new RegExp(r'[a-zA-z]'))){
                                                               return "إدخال خاطئ";
                                                             }
                                                           },
@@ -216,10 +217,10 @@ class _DoctorsListState extends State<DoctorsList> {
                                                             controller: controllers[index]["nationNumController"],
                                                             enabled: controllers[index]["nationNumEnabled"],
                                                           validator: (val){
-                                                            if(val == ""){
+                                                            if(controllers[index]["nationNumEnabled"] && val == ""){
                                                               return "لا يمكن ترك الحقل فارغا";
                                                             }
-                                                            if(val!.contains(new RegExp(r'[a-zA-z]'))){
+                                                            if(controllers[index]["nationNumEnabled"] && val!.contains(new RegExp(r'[a-zA-z]'))){
                                                               return "إدخال خاطئ";
                                                             }
                                                           },
@@ -294,8 +295,8 @@ class _DoctorsListState extends State<DoctorsList> {
                                                                     //يتم تحديث بيانات الطبيب ضمن قاعدة البيانات
                                                                     snapshot.data!.docs[index].reference.update(
                                                                         {
-                                                                          "nationNum" : controllers[index]["nationNumController"].text,
-                                                                          "phoneNum" : controllers[index]["phoneController"].text,
+                                                                          "nationNum" : controllers[index]["nationNumEnabled"] ? controllers[index]["nationNumController"].text : FieldValue,
+                                                                          "phoneNum" : controllers[index]["phoneNumEnabled"] ? controllers[index]["phoneController"].text : FieldValue,
                                                                         });
                                                                     //بعد التعديل يتم إغلاق الحقول وجعلها disabled مجددا
                                                                     controllers[index]["nationNumController"].text = "";

@@ -109,7 +109,7 @@ class _CountriesState extends State<Countries> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
                                 image: DecorationImage(
-                                  image: NetworkImage(data[index]["imagePath"]),
+                                  image: NetworkImage(data[index]["imagePath"],),
                                   fit: BoxFit.cover
                                 )
                               ),

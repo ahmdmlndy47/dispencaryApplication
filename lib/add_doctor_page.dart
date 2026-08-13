@@ -312,6 +312,7 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                         //يتم إضافة الطبيب للمستوصف
                         await dispensary.docs.first.reference.collection("doctors").add(
                             {
+                              "UID" : "",
                               "firstName" : firstNameController.text,
                               "lastName" : lastNameController.text,
                               "phoneNum" : phoneNumController.text,

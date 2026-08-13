@@ -13,6 +13,7 @@ class AppointmentPage extends StatefulWidget {
 
 class _AppointmentPageState extends State<AppointmentPage> {
   bool _sendNot = false;
+  String? remainingTime;
   @override
   void initState() {
     super.initState();
@@ -117,6 +118,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     );
                   }
                   //الآن اذا تم العثور على الموعد سيتم إظهاره تلقائيا
+                  // if(appSnapshot.data!.docs.first["appointNum"]*15 > 60){
+                  //   int remainingMinutes = (appSnapshot.data!.docs.first["appointNum"]*15)%60;
+                  //   int remainingHours = ((appSnapshot.data!.docs.first["appointNum"]*15)/60).floor();
+                  // }
                   return Directionality(
                     textDirection: TextDirection.rtl,
                     child: ListView(
@@ -290,13 +295,29 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                   btnOkOnPress: ()async{
                                                     //عند إلغاء الموعد سيتم التعديل على بيانات المريض
                                                     //يتم جعل المريض لا يمتلك موعد
-                                                    patient.reference.update({
+                                                    await patient.reference.update({
                                                       "hasAppoint" : false
                                                     });
+                                                    //ثم يتم انقاص عدد المرضى بالعيادة
+                                                    final clinic =
+                                                    await FirebaseFirestore.instance.collection("countries")
+                                                        .doc(appSnapshot.data!.docs.first["countryId"])
+                                                        .collection("dispensaries")
+                                                        .doc(appSnapshot.data!.docs.first["disId"])
+                                                        .collection("clinics")
+                                                        .where("clinicName",isEqualTo: appSnapshot.data!.docs.first["appointClinic"])
+                                                        .limit(1).get();
+                                                      if(clinic.docs.isNotEmpty){
+                                                        await clinic.docs.first.reference.update(
+                                                            {
+                                                              "patientNum" : FieldValue.increment(-1)
+                                                            });
+                                                                                                          }
                                                     //يتم حذف الموعد
                                                    if(appSnapshot.data!.docs.length != 0){
                                                      await appSnapshot.data!.docs.first.reference.delete();
                                                    }
+
                                                   }
                                               ).show();
                                             },
