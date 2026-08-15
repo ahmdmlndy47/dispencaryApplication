@@ -255,6 +255,7 @@ class _DoctorPageState extends State<DoctorPage> {
                                     fontSize: 18,
                                     btnColor: Colors.blueAccent
                                 )),
+                            SizedBox(width: 10,),
                             //زر التخلف عن الموعد
                             //هذا الزر يستخدم لتقديم الدور ولكن في حال تخلف المريض عن الموعد
                             Expanded(

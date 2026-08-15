@@ -107,13 +107,38 @@ class _CountriesState extends State<Countries> {
                             child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-                                image: DecorationImage(
-                                  image: NetworkImage(data[index]["imagePath"],),
-                                  fit: BoxFit.cover
-                                )
+                                borderRadius: BorderRadius.vertical(
+                                  bottom: Radius.circular(20),
+                                ),
                               ),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.network(
+                                data[index]["imagePath"],
+                                fit: BoxFit.cover,
+
+                                // إذا فشل تحميل الصورة
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Center(
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    ),
+                                  );
+                                },
+
+                                // أثناء تحميل الصورة
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
                               ),
+                            ),
                           ),
                         ],
                       ),

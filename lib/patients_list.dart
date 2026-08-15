@@ -13,18 +13,27 @@ class PatientsList extends StatefulWidget {
 }
 
 class _PatientsListState extends State<PatientsList> {
+  //مصفوفة لتخزين المرضى الذين يتم البحث عنهم
   List<QueryDocumentSnapshot> patients = [];
   GlobalKey<FormState> editKey = GlobalKey();
+  //متغير للتأكد فيما إذا كان قد تم البحث ام لا
   bool searched = false;
+  //متغير يعبر عن إذا كان حقل التعديل الخاص بالعمر مفتوح ومتاح للتعديل
   bool isAgeEnabled = false;
+  //متغير يعبر عن إذا كان حقل التعديل الخاص برقم الهاتف مفتوح ومتاح للتعديل
   bool isPhoneEnabled = false;
+  //متغير يعبر عن إذا كان حقل التعديل الخاص بالرقم الوطني مفتوح ومتاح للتعديل
   bool isNationNumEnabled = false;
   GlobalKey<FormState> nameKey = GlobalKey();
+  //القائمة الخاصة بالcontrollers الخاصة للحقول لكل مريض
   List controllers = [];
+  //الcontrollers الخاصين بحقول البحث (الاسم الاول|الاسم الثاني)
   late TextEditingController fNameController;
   late TextEditingController lNameController;
+  //التابع الخاص بجلب المرضى عند البحث
   getPatients(String fName,String lName) async{
     controllers.clear();
+    //اولا يتم جلب المستوصف الحالي
     final dispensary =
     await FirebaseFirestore.instance
         .collectionGroup("dispensaries")
@@ -32,11 +41,13 @@ class _PatientsListState extends State<PatientsList> {
         "admins",
         arrayContains: FirebaseAuth.instance.currentUser!.uid)
         .limit(1).get();
+    //ثانيا يتم حلب المرضى الذين اسمهم يوافق مدخلات البحث
     final ptns = await dispensary.docs.first.reference
         .collection("patients")
         .where("firstName",isEqualTo: fName)
         .where("lastName",isEqualTo: lName).get();
     patients = ptns.docs;
+    //يتم تعبئة controllers بعدد المرضى الذين تم الحصول عليهم
     for(int i=0;i<patients.length;i++){
       controllers.add({
         "ageController" : TextEditingController(),
@@ -61,10 +72,12 @@ class _PatientsListState extends State<PatientsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //عنوان الصفحة
       appBar: AppBar(
         title: Text("قائمة المرضى"),
         centerTitle: true,
       ),
+      //جسم الصفحة
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: Form(
@@ -72,6 +85,7 @@ class _PatientsListState extends State<PatientsList> {
           child: ListView(
             padding: EdgeInsets.all(20),
             children: [
+              //كونتينر فيه نص توضيحي يشرح آلية البحث
               Center(
                 child: Container(
                   decoration: BoxDecoration(
@@ -97,10 +111,12 @@ class _PatientsListState extends State<PatientsList> {
                 ),
               ),
               SizedBox(height: 20,),
+              //نص توضيحي لحقل الاسم الأول الخاص بالبحث
               Text(
                 "الاسم الأول للمريض",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
+              //حقل الاسم الأول الخاص بالبحث
               InputField(
                   hint: "أدخل اسم المريض الأول",
                   icon: Icon(Icons.person),
@@ -115,10 +131,12 @@ class _PatientsListState extends State<PatientsList> {
                   },
               ),
               SizedBox(height: 10,),
+              //نص توضيحي لحقل الاسم الأخير الخاص بالبحث
               Text(
                 "الاسم الأخير للمريض",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
+              //نص توضيحي لحقل الاسم الأخير الخاص بالبحث
               InputField(
                 hint: "أدخل اسم المريض الأخير",
                 icon: Icon(Icons.person),
@@ -133,9 +151,12 @@ class _PatientsListState extends State<PatientsList> {
                 },
               ),
               SizedBox(height: 10,),
+              //زر البحث
               MyButton(
                   onPressed: () async{
+                    //عند الضغط عليه سيتحقق من صحة المدخلات أولا
                     if(nameKey.currentState!.validate()){
+                      //ّإذا كانت صحيحة سيتم تنفيذ تابع البحث وجلب المرضى
                       await getPatients(fNameController.text.trim(), lNameController.text.trim());
 
                         setState(() {
@@ -152,7 +173,10 @@ class _PatientsListState extends State<PatientsList> {
                   btnColor: Colors.blueAccent
               ),
               SizedBox(height: 20,),
+              //هنا يتم اختبار فيما إذا كان فد تم البحث ولم يجد مريض بهذا الاسم
+              //سيتم إظهار رسالة توضيحية في هذه الحالة
               if(searched && patients.isEmpty)
+                //الرسالة التوضيحية
                 Text(
                   "هذا المريض غير موجود بالمستوصف",
                   style: TextStyle(
@@ -161,13 +185,17 @@ class _PatientsListState extends State<PatientsList> {
                       color: Colors.black
                   ),
                 ),
+              //هنا في حال تم إيجاد مرضى بهذا الاسم
               if(searched && patients.isNotEmpty)
+                //سيتم بناء قائمة بهؤلاء المرضى
                 ...List.generate(patients.length, (index){
+                  //كل مريض عبارة عن card
                   return MyCard(
                       title: "${patients[index]["firstName"]} ${patients[index]["lastName"]}",
                       subtitle: patients[index]["nationNum"],
                       trailing: "انقر لرؤية المزيد",
                       onTap: () {
+                        //عند الضغط على المريض سيظهرdialog يحتوي البيانات الحالية للتعديل عليها
                         final parentContext = context;
                         showDialog(
                             barrierDismissible: false,
