@@ -230,22 +230,24 @@ class _DoctorPageState extends State<DoctorPage> {
                                       //عند الضغط عليه سيتم حذف الموعد والتعديل على ىبيانات المريض
                                       //ليصبح المريض لا يملك اي موعد
                                       final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: currApp["patientId"]).limit(1).get();
+                                      if(patient.docs.isEmpty) return;
                                       //الجزء الخاص بالتعديل
                                       await patient.docs.first.reference.update({
                                         "hasAppoint" : false
                                       });
                                       //تعديل دور المرضى الباقيين وانقاصه
-                                      apps.data!.docs.forEach((app) => app.reference.update(
-                                          {
-                                            "appointNum" : FieldValue.increment(-1)
-                                          }));
+                                      for (final app in apps.data!.docs) {
+                                        if (app.id != currApp.id) {
+                                          await app.reference.update({
+                                            "appointNum": FieldValue.increment(-1),
+                                          });
+                                        }
+                                      }
                                       //الجزء الخاص بالحذف
                                       await currApp.reference.delete();
                                       //وسيتم إنقاص عدد المرضى بالعيادة
                                       await clinic.reference.update({"patientNum" : FieldValue.increment(-1)});
-                                      //بعد ذلك سيتم تقديم الدور وجلب الدور الجديد
-                                      appsCount++;
-                                      setState(() {});
+
 
                                     },
                                     label: "التالي",
@@ -260,7 +262,33 @@ class _DoctorPageState extends State<DoctorPage> {
                             //هذا الزر يستخدم لتقديم الدور ولكن في حال تخلف المريض عن الموعد
                             Expanded(
                                 child: MyButton(
-                                    onPressed: ()async{},
+                                    onPressed: ()async{
+                                      //عند الضغط عليه سيتم حذف الموعد والتعديل على ىبيانات المريض
+                                      //ليصبح المريض لا يملك اي موعد
+                                      final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: currApp["patientId"]).limit(1).get();
+                                      //الجزء الخاص بالتعديل
+                                      //يتم التعديل لجعل المريض لا يملك موعد
+                                      //وثم يتم تعديل بيانات المريض لجعله تخلف عن موعد
+                                      if(patient.docs.isEmpty) return;
+                                      await patient.docs.first.reference.update({
+                                        "hasAppoint" : false,
+                                        "missedAnApp" : true
+                                      });
+
+                                      //تعديل دور المرضى الباقيين وانقاصه
+                                      for (final app in apps.data!.docs) {
+                                        if (app.id != currApp.id) {
+                                          await app.reference.update({
+                                            "appointNum": FieldValue.increment(-1),
+                                          });
+                                        }
+                                      }
+                                      //الجزء الخاص بالحذف
+                                      await currApp.reference.delete();
+                                      //وسيتم إنقاص عدد المرضى بالعيادة
+                                      await clinic.reference.update({"patientNum" : FieldValue.increment(-1)});
+
+                                    },
                                     label: "تخلف عن الموعد",
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20)

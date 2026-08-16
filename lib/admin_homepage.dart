@@ -25,15 +25,19 @@ class _AdminHomepageState extends State<AdminHomepage> {
   TextEditingController editingController = TextEditingController();
   getDoctors() async{
     final snapshot =await FirebaseFirestore.instance.collectionGroup("dispensaries").where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+    if (snapshot.docs.isEmpty) {
+      return;
+    }
     final docsSnapshot = await snapshot.docs.first.reference.collection("doctors").get();
-    doctors = docsSnapshot.docs;
+    if(!mounted) return;
     setState(() {
+      doctors = docsSnapshot.docs;
     });
   }
   @override
   void initState() {
-    getDoctors();
     super.initState();
+    getDoctors();
   }
   @override
   Widget build(BuildContext context) {
@@ -76,12 +80,15 @@ class _AdminHomepageState extends State<AdminHomepage> {
           )
         ],
       ),
+      //جسم الصفحة
       body: StreamBuilder(
           stream: stream,
           builder: (context,AsyncSnapshot<QuerySnapshot> snapshot){
+            //في حال مازال يتم تحميل البيانات ستظهر دائرة الloading
             if(snapshot.connectionState == ConnectionState.waiting){
               return Center(child: CircularProgressIndicator(),);
             }
+            //في حال لم يتم الحصول على اي بيانات لعرضها سيتم إظهار رسالة توضيحية
             if(!snapshot.hasData || snapshot.data!.docs.length == 0){
               return Center(
                 child: Padding(
@@ -115,6 +122,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                 ),
               );
             }
+            //عندما نصل الى هنا هذا يعني اننا حصلنا على البيانات بشكل صحيح
             return Directionality(
               textDirection: TextDirection.rtl,
               child: ListView(
@@ -220,9 +228,11 @@ class _AdminHomepageState extends State<AdminHomepage> {
                   StreamBuilder(
                       stream: snapshot.data!.docs.first.reference.collection("clinics").snapshots(),
                       builder: (context,AsyncSnapshot<QuerySnapshot> clinics){
+                        //في حال مازال يتم تحميل البيانات ستظهر دائرة الloading
                         if(clinics.connectionState == ConnectionState.waiting){
                           return Center(child: CircularProgressIndicator(),);
                         }
+                        //في حال لم يتم الحصول على اي بيانات لعرضها سيتم إظهار رسالة توضيحية
                         if(!clinics.hasData || clinics.data!.docs.length == 0){
                           return Center(
                             child: Padding(
@@ -256,11 +266,13 @@ class _AdminHomepageState extends State<AdminHomepage> {
                             ),
                           );
                         }
+                        //إذا وصلنا لهنا فنحن جلبنا العيادات بشكل صحيح وسيتم عرضها
                         return ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: clinics.data!.docs.length,
                             itemBuilder: (context,index){
+                              //كل عيادة سيتم عرضها من خلال card
                             return MyCard(
                                 title: clinics.data!.docs[index]["clinicName"],
                                 subtitle: clinics.data!.docs[index]["docName"],
@@ -307,6 +319,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                   ),
                                                                   hintText: "اسم الطبيب",
                                                                 ),
+                                                                //سيظهر فقط الأطباء الموجودين ضمن هذا المستوصف
                                                                 items: doctors.map<DropdownMenuItem<String>>((doctor){
                                                                   return DropdownMenuItem(
                                                                     value: "${doctor["firstName"]} ${doctor["lastName"]}",
@@ -520,8 +533,9 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                         Expanded(
                                                           child: TextButton(
                                                               onPressed: (){
+                                                                //عند الضغط عليه سيظهر ديالوغ لتأكيد التعديل
                                                                 AwesomeDialog(
-                                                                    context: dialogContext,
+                                                                    context: parentContext,
                                                                     title: "تعديل العيادة",
                                                                     desc: "هل انت متأكد من التعديل",
                                                                     dialogType: DialogType.warning,
@@ -531,12 +545,16 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                     showCloseIcon: true,
                                                                     btnCancelOnPress: (){},
                                                                     btnOkOnPress: ()async{
+                                                                      //عند التأكيد سيتحقق اولا فيما إذا تم اختيار طبيب
                                                                       if (selectedDoc == null) {
-                                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                                        //في حال لم يتم اختيار طبيب سيظهرsnackbar يوضح أنه يجب اختيار طبيب
+                                                                        ScaffoldMessenger.of(parentContext).showSnackBar(
                                                                           const SnackBar(content: Text("اختر الطبيب أولاً")),
                                                                         );
                                                                         return;
                                                                       }
+                                                                      //إذا وصلنا لهنا هذا يعني أنه تم التأكيد وتم اختيار طبيب
+                                                                      //لذلك سيتم تعديل بيانات العيادة للبيانات الجديدة
                                                                      await clinics.data!.docs[index].reference.update(
                                                                           {"docName" : selectedDoc});
                                                                       Navigator.of(dialogContext).pop();
@@ -566,7 +584,163 @@ class _AdminHomepageState extends State<AdminHomepage> {
                             }
                         );
                       }
-                  )
+                  ),
+                  SizedBox(height: 20,),
+                  //قائمة المرضى الذين قد تخلفو عن مواعيدهم
+                  Text(
+                    "المرضى المتخلفين عن موعد",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  StreamBuilder(
+                      stream: snapshot.data!.docs.first.reference.collection("patients").where("missedAnApp",isEqualTo: true).snapshots(),
+                      //في حال مازال يتم تحميل البيانات ستظهر دائرة الloading
+                      builder: (context,AsyncSnapshot<QuerySnapshot> patients){
+                        if(patients.connectionState == ConnectionState.waiting){
+                          return Center(child: CircularProgressIndicator(),);
+                        }
+                        if(patients.hasError){
+                          return Text(
+                            "ERROR: ${snapshot.error}",
+                            style: const TextStyle(color: Colors.red),
+                          );
+                        }
+                        //في حال لم يتم الحصول على اي بيانات لعرضها سيتم إظهار رسالة توضيحية
+                        if(!patients.hasData || patients.data!.docs.length == 0){
+                          return Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Center(
+                                child: Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black,
+                                              offset: Offset(-5, 5),
+                                              blurRadius: 5
+                                          ),
+                                        ],
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20)
+                                    ),
+                                    child: Text(
+                                      "لا يوجد بيانات لعرضها",
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent
+                                      ),
+                                    ),
+                                  ),
+                                ),),
+                            ),
+                          );
+                        }
+                        //عند الوصول لهنا هذا يعني أننا حصلنا على مرضى
+                        return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: patients.data!.docs.length,
+                            itemBuilder: (context,index){
+                              //كل مريض عبارة عن card
+                              return MyCard(
+                                  title: "${patients.data!.docs[index]["firstName"]} ${patients.data!.docs[index]["lastName"]}",
+                                  subtitle: "${patients.data!.docs[index]["phone"]}",
+                                  trailing: "انقر للتعديل",
+                                  //عند الضغط عليها سيظهر dialog لحظر المريض بما انه قد تخلف عن موعد
+                                  onTap: ()async{
+                                    final parentContext = context;
+                                    showDialog(
+                                        context: context,
+                                        builder: (dialogContext){
+                                          //الdialog الذي سيظهر
+                                          return Dialog(
+                                            child: Directionality(
+                                                textDirection: TextDirection.rtl,
+                                                child: Container(
+                                                  padding: EdgeInsets.all(20),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey,
+                                                        blurRadius: 5,
+                                                        offset: Offset(-5, 5)
+                                                      ),
+                                                    ],
+                                                    borderRadius: BorderRadius.circular(20),
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      //عنوان الdialog والذي هو اسم المريض
+                                                      Text(
+                                                        "${patients.data!.docs[index]["firstName"]} ${patients.data!.docs[index]["lastName"]}",
+                                                        style: Theme.of(context).textTheme.titleMedium,
+                                                      ),
+                                                      SizedBox(height: 30,),
+                                                      //زر حظر المريض
+                                                      MyButton(
+                                                          onPressed: () async{
+                                                            final messenger = ScaffoldMessenger.of(parentContext);
+                                                            //عند الضغط عليه سيتم إزالة الdialog أولا
+                                                            Navigator.of(dialogContext).pop();
+                                                            //ثم سيتم إظهار dialog لتأكيد الحظر
+                                                            AwesomeDialog(
+                                                              context: parentContext,
+                                                              title: "هل انت متأكد من حظر المريض",
+                                                              titleTextStyle: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight: FontWeight.w600,
+                                                                color: Colors.red
+                                                              ),
+                                                              btnOkText: "نعم",
+                                                              btnCancelText: "لا",
+                                                              btnOkColor: Colors.green,
+                                                              btnCancelColor: Colors.red,
+                                                              dialogType: DialogType.question,
+                                                              btnOkOnPress: ()async{
+                                                                //عند تأكيد الحظر
+                                                                //أولا سيتم تعديل بيانات المريض لكي يصبح محظور
+                                                                //وأيضا بعد حظره يتم إزالته من القائمة عن طريق تعديل الmissedAnApp إلى false
+                                                                await patients.data!.docs[index].reference.update(
+                                                                    {
+                                                                      "missedAnApp" : false,
+                                                                      "available" : false,
+                                                                    });
+                                                                //ثم يتم إظهار snackbar يؤكد أنه تم الحظر
+
+                                                                messenger.showSnackBar(
+                                                                  SnackBar(
+                                                                    content: Text("تم حظر المريض"),
+                                                                    duration: Duration(seconds: 1),
+                                                                  )
+                                                                );
+                                                              },
+                                                              btnCancelOnPress: (){}
+                                                            ).show();
+                                                          },
+                                                          label: "حظر المريض",
+                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                          fontSize: 18,
+                                                          btnColor: Colors.red
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  trailingColor: Colors.red
+                              );
+                            }
+                        );
+                      }
+                  ),
                 ],
               ),
             );

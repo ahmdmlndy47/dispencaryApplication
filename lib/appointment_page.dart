@@ -71,6 +71,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
               ),);
             }
             final patient = snapshot.data!.docs.first;
+            final bool hasAppoint = patient["hasAppoint"] ?? false;
             return StreamBuilder(
               //هنا يتم طلب الوصول لبيانات موعد المريض
                 stream: patient.reference.collection("appointment").snapshots(),
@@ -80,8 +81,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     return Center(child: CircularProgressIndicator(),);
                   }
                   //في حال كان للمريض موعد ولم يتم العثور على بيانات له سيتم إظهار رسالة توضيحية
-                  if(patient["hasAppoint"] &&
-                      (!appSnapshot.hasData || appSnapshot.data!.docs.isEmpty)){
+                  if (!hasAppoint ||
+                      !appSnapshot.hasData ||
+                      appSnapshot.data!.docs.isEmpty){
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(30.0),
@@ -105,7 +107,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             ),
                             //النص التوضيحي
                             child: Text(
-                              "لا يمكن العثور على الموعد",
+                              hasAppoint
+                                  ? "لا يمكن العثور على الموعد"
+                                  : "لا يوجد موعد حالي",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -117,11 +121,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       ),
                     );
                   }
-                  //الآن اذا تم العثور على الموعد سيتم إظهاره تلقائيا
-                  // if(appSnapshot.data!.docs.first["appointNum"]*15 > 60){
-                  //   int remainingMinutes = (appSnapshot.data!.docs.first["appointNum"]*15)%60;
-                  //   int remainingHours = ((appSnapshot.data!.docs.first["appointNum"]*15)/60).floor();
-                  // }
+                  final appointment = appSnapshot.data!.docs.first;
                   return Directionality(
                     textDirection: TextDirection.rtl,
                     child: ListView(
@@ -170,7 +170,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         SizedBox(height: 30,),
                         //إذا كان لديه موعد سنظهر الموعد
                         //إذا لم يكن لديه موعد سيظهر نص يوضح أنه ليس لديه موعد
-                        patient["hasAppoint"] ? Padding(
+                        hasAppoint ? Padding(
                           padding: const EdgeInsets.all(30.0),
                           child: Center(
                             //الموعد الذي سيظهر
@@ -204,7 +204,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                   SizedBox(height: 20,),
                                   //المستوصف التي حجز فيها الموعد
                                   Text(
-                                    "لديك موعد ب${appSnapshot.data!.docs.first["appointDis"]}",
+                                    "لديك موعد ب${appointment["appointDis"]}",
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -214,7 +214,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                   SizedBox(height: 10,),
                                   //العيادة التي حجز فيها الموعد
                                   Text(
-                                    "${appSnapshot.data!.docs.first["appointClinic"]}",
+                                    "${appointment["appointClinic"]}",
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -249,7 +249,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                         SizedBox(height: 10,),
                                         //عدد المرضى المتبقيين
                                            Text(
-                                            "${appSnapshot.data!.docs.first["appointNum"]}",
+                                            "${appointment["appointNum"]}",
                                             style: TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold,
@@ -301,11 +301,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                     //ثم يتم انقاص عدد المرضى بالعيادة
                                                     final clinic =
                                                     await FirebaseFirestore.instance.collection("countries")
-                                                        .doc(appSnapshot.data!.docs.first["countryId"])
+                                                        .doc(appointment["countryId"])
                                                         .collection("dispensaries")
-                                                        .doc(appSnapshot.data!.docs.first["disId"])
+                                                        .doc(appointment["disId"])
                                                         .collection("clinics")
-                                                        .where("clinicName",isEqualTo: appSnapshot.data!.docs.first["appointClinic"])
+                                                        .where("clinicName",isEqualTo: appointment["appointClinic"])
                                                         .limit(1).get();
                                                       if(clinic.docs.isNotEmpty){
                                                         await clinic.docs.first.reference.update(
@@ -314,9 +314,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                             });
                                                                                                           }
                                                     //يتم حذف الموعد
-                                                   if(appSnapshot.data!.docs.length != 0){
-                                                     await appSnapshot.data!.docs.first.reference.delete();
-                                                   }
+                                                   await appointment.reference.delete();
 
                                                   }
                                               ).show();
@@ -376,8 +374,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   );
                 }
             );
-          }
-      )
+          },
+      ),
               );
             }
             }

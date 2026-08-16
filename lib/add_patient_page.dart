@@ -277,7 +277,8 @@ late TextEditingController nationNumController;
                                                         "phone" : phoneNumController.text,
                                                         "nationNum" : nationNumController.text,
                                                         "hasAppoint" : false,
-                                                        "available" : true
+                                                        "available" : true,
+                                                        "missedAnApp" : false,
                                                       });
                                                       //ويتم عرض رسالة توضيحية بنجاح الإضافة
                                                       AwesomeDialog(

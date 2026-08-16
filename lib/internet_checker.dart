@@ -23,6 +23,7 @@ class InternetChecker extends StatefulWidget {
 class _InternetCheckerState extends State<InternetChecker> {
 
   bool hasInternet = false;
+  bool isRetrying = false;
 
   StreamSubscription<List<ConnectivityResult>>? subscription;
 
@@ -52,9 +53,8 @@ class _InternetCheckerState extends State<InternetChecker> {
 
   // فحص الإنترنت الحقيقي
   Future<bool> hasRealInternet() async {
+    final client = HttpClient();
     try {
-      final client = HttpClient();
-
       final request = await client
           .getUrl(
         Uri.parse(
@@ -62,11 +62,11 @@ class _InternetCheckerState extends State<InternetChecker> {
         ),
       )
           .timeout(
-        const Duration(seconds: 5),
+        const Duration(seconds: 3),
       );
 
       final response = await request.close().timeout(
-        const Duration(seconds: 5),
+        const Duration(seconds: 3),
       );
 
       client.close();
@@ -76,7 +76,27 @@ class _InternetCheckerState extends State<InternetChecker> {
 
     } catch (e) {
       return false;
+    }finally{
+      client.close(force: true);
     }
+  }
+
+  Future<void> retryInternet() async {
+    if (isRetrying) return;
+
+    if (mounted) {
+      setState(() {
+        isRetrying = true;
+      });
+    }
+
+    await checkInternet();
+
+    if (!mounted) return;
+
+    setState(() {
+      isRetrying = false;
+    });
   }
 
   Future<void> checkInternet() async {
@@ -87,21 +107,18 @@ class _InternetCheckerState extends State<InternetChecker> {
     bool internetAvailable = false;
 
     try {
-      final connectivity =
-      await Connectivity().checkConnectivity();
+      final connectivity = await Connectivity().checkConnectivity();
 
       if (!connectivity.contains(ConnectivityResult.none)) {
         internetAvailable = await hasRealInternet();
       }
-
     } catch (e) {
       internetAvailable = false;
     }
 
-    if (!mounted) {
-      isChecking = false;
-      return;
-    }
+    isChecking = false;
+
+    if (!mounted) return;
 
     final oldValue = hasInternet;
 
@@ -109,8 +126,7 @@ class _InternetCheckerState extends State<InternetChecker> {
       hasInternet = internetAvailable;
     });
 
-    isChecking = false;
-
+    // الإنترنت أصبح متاحاً بعد أن كان مقطوعاً
     if (!oldValue && internetAvailable) {
       widget.onInternetAvailable?.call();
     }
@@ -132,8 +148,7 @@ class _InternetCheckerState extends State<InternetChecker> {
 
         if (!hasInternet)
           Positioned.fill(
-            child: AbsorbPointer(
-              absorbing: true,
+
               child: Container(
                 color: Colors.black54,
                 child: Center(
@@ -172,9 +187,23 @@ class _InternetCheckerState extends State<InternetChecker> {
                           const SizedBox(height: 20),
 
                           ElevatedButton.icon(
-                            onPressed: checkInternet,
-                            icon: const Icon(Icons.refresh),
-                            label: const Text("إعادة المحاولة"),
+                            onPressed: isRetrying ? null : retryInternet,
+
+                            icon: isRetrying
+                                ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : const Icon(Icons.refresh),
+
+                            label: Text(
+                              isRetrying
+                                  ? "جارٍ التحقق..."
+                                  : "إعادة المحاولة",
+                            ),
                           ),
                         ],
                       ),
@@ -183,7 +212,7 @@ class _InternetCheckerState extends State<InternetChecker> {
                 ),
               ),
             ),
-          ),
+
       ],
     );
   }
