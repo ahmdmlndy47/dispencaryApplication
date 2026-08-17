@@ -28,40 +28,29 @@ class _DoctorPageState extends State<DoctorPage> {
   late QueryDocumentSnapshot clinic;
   late QueryDocumentSnapshot currApp;
   //تابع جلب البيانات
-  getData() async{
-    if(!isLoaded){
-      final doc = await FirebaseFirestore.instance.collectionGroup("doctors").where("UID",isEqualTo: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
-      final dis = await FirebaseFirestore.instance.collectionGroup("dispensaries").where("doctors",arrayContains: doc.docs.first["nationNum"]).limit(1).get();
-      final cl = await dis.docs.first.reference.collection("clinics").where("docName",isEqualTo: "${doc.docs.first["firstName"]} ${doc.docs.first["lastName"]}").limit(1).get();
+  getData() async {
+    if (!isLoaded) {
+      final doc = await FirebaseFirestore.instance
+          .collectionGroup("doctors")
+          .where("UID", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .limit(1)
+          .get();
+      final dis = await FirebaseFirestore.instance.collectionGroup(
+          "dispensaries").where(
+          "doctors", arrayContains: doc.docs.first["nationNum"]).limit(1).get();
+      final cl = await dis.docs.first.reference.collection("clinics").where(
+          "docName", isEqualTo: "${doc.docs.first["firstName"]} ${doc.docs
+          .first["lastName"]}").limit(1).get();
       dispensary = dis.docs.first;
       doctor = doc.docs.first;
       clinic = cl.docs.first;
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
       isLoaded = true;
-      // getCurrentApp();
     }
-    // else{
-    //   getCurrentApp();
-    // }
   }
-  // getCurrentApp()async{
-  //   isLoading = true;
-  //   final currentAppointment = appoints.where(
-  //           (app) => app["appointNum"] == currentAppNum
-  //   ).toList();
-  //   if(currentAppointment.isNotEmpty){
-  //     noAppoint = false;
-  //     currApp = currentAppointment.first;
-  //   }else{
-  //     noAppoint = true;
-  //   }
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  //
-  // }
   @override
   void initState() {
     getData();
@@ -83,6 +72,7 @@ class _DoctorPageState extends State<DoctorPage> {
         actions: [
           ElevatedButton.icon(
             onPressed: (){
+              //عند الضغط عليه سيظهر dialog للتأكيد
               AwesomeDialog(
                   context: context,
                   title: "تسجيل الخروج",
@@ -91,6 +81,7 @@ class _DoctorPageState extends State<DoctorPage> {
                   showCloseIcon: true,
                   animType: AnimType.rightSlide,
                   btnOkOnPress: (){
+                    //عند التأكيد سيتم تسجيل الخروج والانتقال لصفحة التسجيل
                     FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
                   },
@@ -126,16 +117,21 @@ class _DoctorPageState extends State<DoctorPage> {
               .where("appointClinic",isEqualTo: clinic["clinicName"])
               .snapshots(),
           builder: (context,AsyncSnapshot<QuerySnapshot> apps){
+            //في حال لم يتم تحميل البيانات بعد ستظهر دائرة الloading
            if(apps.connectionState == ConnectionState.waiting){
              return Center(child: CircularProgressIndicator(),);
            }
+           //الآن يتم جلب الموعد الحالي وتخزينه
            final currentAppoint = apps.data!.docs.where((app) => app["appointNum"] == currentAppNum).toList();
+           //في حال لم يتم إيجاد موعد سيتم تغيير الnoAppoint
            if(currentAppoint.isEmpty){
              noAppoint = true;
            }else{
+             //وإلا فهناك موعد يتم تخزينه ضمن متغير
              currApp = currentAppoint.first;
              noAppoint = false;
            }
+           //الآن سيتم عرض بيانات الصفحة
             return Directionality(
               textDirection: TextDirection.rtl,
               child: ListView(
@@ -227,9 +223,9 @@ class _DoctorPageState extends State<DoctorPage> {
                             Expanded(
                                 child: MyButton(
                                     onPressed: ()async{
-                                      //عند الضغط عليه سيتم حذف الموعد والتعديل على ىبيانات المريض
+                                      //عند الضغط عليه سيتم حذف الموعد والتعديل على ىيانات المريض
                                       //ليصبح المريض لا يملك اي موعد
-                                      final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: currApp["patientId"]).limit(1).get();
+                                      final patient = await dispensary.reference.collection("patients").where("nationNum",isEqualTo: currApp["patientId"]).limit(1).get();
                                       if(patient.docs.isEmpty) return;
                                       //الجزء الخاص بالتعديل
                                       await patient.docs.first.reference.update({
@@ -237,7 +233,8 @@ class _DoctorPageState extends State<DoctorPage> {
                                       });
                                       //تعديل دور المرضى الباقيين وانقاصه
                                       for (final app in apps.data!.docs) {
-                                        if (app.id != currApp.id) {
+                                        if (app.id != currApp.id &&
+                                            app["appointNum"] > currApp["appointNum"]) {
                                           await app.reference.update({
                                             "appointNum": FieldValue.increment(-1),
                                           });
@@ -265,7 +262,7 @@ class _DoctorPageState extends State<DoctorPage> {
                                     onPressed: ()async{
                                       //عند الضغط عليه سيتم حذف الموعد والتعديل على ىبيانات المريض
                                       //ليصبح المريض لا يملك اي موعد
-                                      final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: currApp["patientId"]).limit(1).get();
+                                      final patient = await dispensary.reference.collection("patients").where("nationNum",isEqualTo: currApp["patientId"]).limit(1).get();
                                       //الجزء الخاص بالتعديل
                                       //يتم التعديل لجعل المريض لا يملك موعد
                                       //وثم يتم تعديل بيانات المريض لجعله تخلف عن موعد
@@ -277,7 +274,8 @@ class _DoctorPageState extends State<DoctorPage> {
 
                                       //تعديل دور المرضى الباقيين وانقاصه
                                       for (final app in apps.data!.docs) {
-                                        if (app.id != currApp.id) {
+                                        if (app.id != currApp.id &&
+                                            app["appointNum"] > currApp["appointNum"]) {
                                           await app.reference.update({
                                             "appointNum": FieldValue.increment(-1),
                                           });

@@ -12,22 +12,31 @@ class AdminHomepage extends StatefulWidget {
 }
 // الصفحة الرئيسية للآدمن
 class _AdminHomepageState extends State<AdminHomepage> {
+  //قائمة الأطباء الذين سيتم الحصول عليهم من الداتا بيس
   List<QueryDocumentSnapshot> doctors = [];
+  //الstream الخاصة بالمستوصف الذي يوجد فيه الآدمن الحالي لبناء الصفحة
   final Stream<QuerySnapshot> stream =
       FirebaseFirestore.instance.collectionGroup("dispensaries")
       .where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid)
       .limit(1).snapshots();
+  //متغير يغبر عن الطبيب الذي سيتم اختياره عند التعديل على العياد
   String? selectedDoc;
   final TextEditingController addingClinicController = TextEditingController();
+  //متغير عبارة عن ايكون معبر عن العيادة
   final Icon clinicIcon = Icon(Icons.medical_information);
+  //متغير عبارة عن ايكون معبر عن الطبيب
   final Icon doctorIcon = Icon(Icons.person);
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   TextEditingController editingController = TextEditingController();
+  //تابع الحصول على الأطباء
   getDoctors() async{
+    //أولا يتم الحصول على المستوصف الذي يوجد فيه الآدمن الحالي
     final snapshot =await FirebaseFirestore.instance.collectionGroup("dispensaries").where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+    //في حال لم يتم الحصول على المستوصف يتم الخروج من التابع
     if (snapshot.docs.isEmpty) {
       return;
     }
+    //عند الوصول لهنا فتم الحصول على المستوصف لذلك نأخذ الأطباء منه ونخزنهم
     final docsSnapshot = await snapshot.docs.first.reference.collection("doctors").get();
     if(!mounted) return;
     setState(() {
@@ -48,6 +57,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
         actions: [
           ElevatedButton.icon(
             onPressed: (){
+              //عند الضغط عليه سيظهر dialog للتأكيد
               AwesomeDialog(
                   context: context,
                   title: "تسجيل الخروج",
@@ -56,6 +66,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                   showCloseIcon: true,
                   animType: AnimType.rightSlide,
                   btnOkOnPress: (){
+                    //عند التأكيد سيتم تسجيل الخروج والانقال لصفحة التسجيل
                     FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushNamedAndRemoveUntil("logOrSignPage", (route)=>false);
                   },
@@ -600,7 +611,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                         }
                         if(patients.hasError){
                           return Text(
-                            "ERROR: ${snapshot.error}",
+                            "ERROR: ${patients.error}",
                             style: const TextStyle(color: Colors.red),
                           );
                         }
@@ -728,6 +739,50 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                           fontSize: 18,
                                                           btnColor: Colors.red
                                                       ),
+                                                      SizedBox(height: 10,),
+                                                      MyButton(
+                                                          onPressed: ()async{
+                                                            final messenger = ScaffoldMessenger.of(parentContext);
+                                                            //عند الضغط عليه سيتم إزالة الdialog أولا
+                                                            Navigator.of(dialogContext).pop();
+                                                            //ثم سيتم إظهار dialog لتأكيد الإزالة
+                                                            AwesomeDialog(
+                                                                context: parentContext,
+                                                                title: "هل انت متأكد من إزالة المريض من القائمة",
+                                                                titleTextStyle: TextStyle(
+                                                                    fontSize: 20,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    color: Colors.red
+                                                                ),
+                                                                btnOkText: "نعم",
+                                                                btnCancelText: "لا",
+                                                                btnOkColor: Colors.green,
+                                                                btnCancelColor: Colors.red,
+                                                                dialogType: DialogType.question,
+                                                                btnCancelOnPress: (){},
+                                                              btnOkOnPress: ()async{
+                                                                //عند تأكيد الإزالة
+                                                                // سيتم تعديل بيانات المريض لكي يصبح غير متخلف
+                                                                await patients.data!.docs[index].reference.update(
+                                                                    {
+                                                                      "missedAnApp" : false,
+                                                                    });
+                                                                //ثم يتم إظهار snackbar يؤكد أنه تم الإزالة
+
+                                                                messenger.showSnackBar(
+                                                                    SnackBar(
+                                                                      content: Text("تم إزالة المريض من القائمة"),
+                                                                      duration: Duration(seconds: 1),
+                                                                    )
+                                                                );
+                                                              },
+                                                            ).show();
+                                                          },
+                                                          label: "إزالة من القائمة",
+                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                          fontSize: 18,
+                                                          btnColor: Colors.red
+                                                      )
                                                     ],
                                                   ),
                                                 )

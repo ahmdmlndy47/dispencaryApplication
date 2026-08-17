@@ -14,10 +14,15 @@ class AddPatientPage extends StatefulWidget {
 
 class _AddPatientPageState extends State<AddPatientPage> {
   GlobalKey<FormState> patientKey = GlobalKey();
+  //controller خاص بالاسم الأول
 late TextEditingController firstNameController;
+//controller خاص بحقل الاسم الأخير
 late TextEditingController lastNameController;
+//controller خاص بحقل العمر
 late TextEditingController ageController;
+//controller خاص بحقل رقم الهاتف
 late TextEditingController phoneNumController;
+//controller خاص بحقل الرقم الوطني
 late TextEditingController nationNumController;
 
 @override
@@ -235,52 +240,155 @@ late TextEditingController nationNumController;
                                                 //زر التأكيد
                                                 Expanded(
                                                   child: TextButton(
+                                                    //عند الضغط عليه
                                                     onPressed: ()async{
-                                                      //عند الضغط عليه
-                                                      //يتم جلب المستوصف الذي ستتم إضافته إليه أولا
-                                                      final dispensary =
-                                                      await FirebaseFirestore.instance.collectionGroup("dispensaries")
+                                                      //متغير لتخزين الuser id للمريض ان كان موجود ببعض المستوصفات
+                                                      String patientUserId = "";
+                                                      //متغير يعبر عن عدد المستوصفات الموجود بها المريض
+                                                      int existsCount = 0;
+                                                      //مصفوفة المعرفات التي موجود بها المريض
+                                                      List<String> dispensariesId = [];
+                                                      //متغير يعبر عما إذا كان المريض موجود بمستوصف الآدمن الحالي
+                                                      bool isExistInCurr = false;
+                                                      //يتم جلب مستوصف الآدمن الحالي
+                                                      final currDispensary = await FirebaseFirestore.instance
+                                                          .collectionGroup("dispensaries")
                                                           .where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid)
                                                           .limit(1).get();
-                                                      //ثم يتم جلب الcollection الخاصة بمرضى المستوصف
-                                                      final patients = await dispensary.docs.first.reference.collection("patients");
-                                                      final patientsColl = await patients.get();
-                                                      //متحول لمعرفة فيما إذا كان المريض موجود مسبقا
+                                                      //ثم نبحث عن المريض بهذا المستوصف
+                                                      final currPatient =
+                                                      await currDispensary.docs.first.reference
+                                                          .collection("patients")
+                                                          .where("nationNum",isEqualTo: nationNumController.text)
+                                                          .limit(1).get();
+                                                      //إذا كان موجود نغير قيمة المتغير
+                                                      if(currPatient.docs.isNotEmpty){
+                                                        dispensariesId.add(currDispensary.docs.first.id);
+                                                        patientUserId = currPatient.docs.first["UID"];
+                                                        isExistInCurr = true;
+                                                      }
+                                                      //يتم جلب جميع المستوصفات لأنه عند إنشاء حساب بأي مستوصف سيتم إضافته لكامل مستوصفات التطبيق
+                                                      final dispensaries = await FirebaseFirestore.instance
+                                                          .collectionGroup("dispensaries")
+                                                          .get();
+                                                      //متحول لمعرفة فيما إذا كان المريض موجود مسبقا ببقية المستوصفات
                                                       bool patientExist = false;
-                                                      //إذا تم العثور على هذا المريض ضمن قائمة المرضى يتم تغيير قيمة المتغير
-                                                      patientsColl.docs.forEach((element){
-                                                        if(element["nationNum"] == nationNumController.text){
-                                                          patientExist = true;
+                                                      //التأكد فيما إذا كان المريض موحود
+                                                      for (final dispensary in dispensaries.docs) {
+                                                        //عند الحصول على المستوصف الحالي ستتم المتابعة لأننا اختبرناه مسبقا
+                                                        if(dispensary.id == currDispensary.docs.first.id){
+                                                          continue;
                                                         }
-                                                      });
-                                                      Navigator.of(dialogContext).pop();
-                                                      //في حال كان موجود سيتم إظهار رسالة توضيحية ولن تتم الإضافة
-                                                      if(patientExist){
+                                                        final patientsSnapshot = await dispensary.reference
+                                                            .collection("patients")
+                                                            .where(
+                                                          "nationNum",
+                                                          isEqualTo: nationNumController.text,
+                                                        )
+                                                            .limit(1)
+                                                            .get();
+                                                        //إذا كان موجود بهذا المستوصف
+                                                        if (patientsSnapshot.docs.isNotEmpty) {
+                                                          //نزيد عدد المستوصفات الموجود بها
+                                                          existsCount++;
+                                                          //نضيف معرف هذا المستوصف لقائمة المعرفات
+                                                          dispensariesId.add(dispensary.id);
+                                                          //ونخزن الuserId الخاص بالمريض مرة واحدة
+                                                          if(patientUserId == ""){
+                                                            patientUserId = patientsSnapshot.docs.first["UID"];
+                                                          }
+                                                        }
+                                                      }
+                                                      if(existsCount == dispensaries.docs.length - 1){
+                                                        //عند إيجاد المريض بكل المستوصفات يتم تغيير قيمة المتحول
+                                                        patientExist = true;
+                                                      }
+                                                      //الآن يتم إغلاق الdialog لعرض نتيجة الإضافة
+                                                      if (dialogContext.mounted) {
+                                                        Navigator.of(dialogContext).pop();
+                                                      }
+
+                                                      //في حال كان موجود بجميع المستوصفات سيتم إظهار رسالة توضيحية ولن تتم الإضافة
+                                                      if (patientExist && isExistInCurr) {
+                                                        if (!mounted) return;
+                                                        //الرسالة
                                                         AwesomeDialog(
-                                                            context: context,
-                                                            title: "المريض موجود مسبقا",
-                                                            titleTextStyle: TextStyle(
-                                                                color: Colors.red,
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 18
-                                                            ),
-                                                            dialogType: DialogType.error
+                                                          context: context,
+                                                          title: "المريض موجود مسبقا",
+                                                          titleTextStyle: TextStyle(
+                                                            color: Colors.red,
+                                                            fontWeight: FontWeight.w600,
+                                                            fontSize: 18,
+                                                          ),
+                                                          dialogType: DialogType.error,
                                                         ).show();
+                                                        //إفراغ الحقول
+                                                        setState(() {
+                                                          firstNameController.clear();
+                                                          lastNameController.clear();
+                                                          ageController.clear();
+                                                          nationNumController.clear();
+                                                          phoneNumController.clear();
+                                                        });
                                                         return;
                                                       }
-                                                      //في حال لم يكن موجود ستتم إضافته لقائمة المرضى بهذا المستوصف
-                                                      await patients.add({
-                                                        "UID" : "",
-                                                        "age" : ageController.text,
-                                                        "firstName" : firstNameController.text,
-                                                        "lastName" : lastNameController.text,
-                                                        "phone" : phoneNumController.text,
-                                                        "nationNum" : nationNumController.text,
-                                                        "hasAppoint" : false,
-                                                        "available" : true,
-                                                        "missedAnApp" : false,
-                                                      });
+                                                      //إذا كان موجود بجميع المستوصفات عدا المستوصف الحالي سيتم إضافته للمستوصف
+                                                      if(patientExist && !isExistInCurr){
+                                                        await currDispensary.docs.first.reference.collection("patients").add(
+                                                            {
+                                                              "UID": patientUserId,
+                                                              "age": ageController.text,
+                                                              "firstName": firstNameController.text,
+                                                              "lastName": lastNameController.text,
+                                                              "phone": phoneNumController.text,
+                                                              "nationNum": nationNumController.text,
+                                                              "hasAppoint": false,
+                                                              "available": true,
+                                                              "missedAnApp": false,
+                                                            });
+                                                        //ويتم عرض رسالة توضيحية بنجاح الإضافة
+                                                        if (!mounted) return;
+                                                        //الرسالة
+                                                        AwesomeDialog(
+                                                          context: context,
+                                                          title: "تمت إضافة المريض بنجاح",
+                                                          dialogType: DialogType.success,
+                                                          titleTextStyle: TextStyle(
+                                                            color: Colors.green,
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ).show();
+                                                        //إفراغ الحقول
+                                                        setState(() {
+                                                          firstNameController.clear();
+                                                          lastNameController.clear();
+                                                          ageController.clear();
+                                                          nationNumController.clear();
+                                                          phoneNumController.clear();
+                                                        });
+                                                        return;
+                                                      }
+                                                      //في حال لم يكن موجود ستتم إضافته لقائمة المرضى بكل المستوصفات الغير موجود بها
+                                                      for (final dispensary in dispensaries.docs) {
+                                                        if(dispensariesId.isNotEmpty && dispensariesId.contains(dispensary.id)){
+                                                          continue;
+                                                        }
+                                                        await dispensary.reference.collection("patients").add({
+                                                          "UID": patientUserId,
+                                                          "age": ageController.text,
+                                                          "firstName": firstNameController.text,
+                                                          "lastName": lastNameController.text,
+                                                          "phone": phoneNumController.text,
+                                                          "nationNum": nationNumController.text,
+                                                          "hasAppoint": false,
+                                                          "available": true,
+                                                          "missedAnApp": false,
+                                                        });
+                                                      }
                                                       //ويتم عرض رسالة توضيحية بنجاح الإضافة
+                                                      if (!mounted) return;
+                                                      //الرسالة
                                                       AwesomeDialog(
                                                         context: context,
                                                         title: "تمت إضافة المريض بنجاح",
@@ -288,9 +396,17 @@ late TextEditingController nationNumController;
                                                         titleTextStyle: TextStyle(
                                                           color: Colors.green,
                                                           fontSize: 18,
-                                                          fontWeight: FontWeight.w600
-                                                        )
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
                                                       ).show();
+                                                      //إفراغ الحقول
+                                                      setState(() {
+                                                        firstNameController.clear();
+                                                        lastNameController.clear();
+                                                        ageController.clear();
+                                                        nationNumController.clear();
+                                                        phoneNumController.clear();
+                                                      });
                                                     },
                                                     child: Text(
                                                       "تأكيد",

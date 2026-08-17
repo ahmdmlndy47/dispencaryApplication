@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dispensary/components/input_field.dart';
-import 'package:http/http.dart';
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -14,9 +13,16 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   //مصفوفة لتخزين المجافظات المأخوذة من الداتا بيس
   List<QueryDocumentSnapshot> data = [];
+  //ماغير يعبر فيما إذا كان المستخدم قد أضاف إيميل مسبقا
   bool haveEmail = false;
+  //متغير يعبر فيما إذا كان قد تم تسجيل المستخدم بالتطبيق
   bool isSigned = false;
+  //متغير لجعل حقول إضافة الإيميل مغلقة حتى التأكد أن المستخدم موجود ولم بضيف إيميل
   bool isEnabled = false;
+  //متغير يعبر عن أن المستخدم مريض
+  bool isPatient = false;
+  //متغير يعبر عن أن المستخدم طبيب
+  bool isDoc = false;
   String? patientId;
   GlobalKey<FormState> nationNumKey = GlobalKey();
   GlobalKey<FormState> emailAndPassKey = GlobalKey();
@@ -24,11 +30,12 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
-  //تابع جلب البيانات
+  //تابع جلب بيانات المريض في حال كان المستخدم مريض
   getPatientData(String nationNum) async{
     QuerySnapshot snapshot = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: nationNum).limit(1).get();
     data =  snapshot.docs;
   }
+  //تابع جلب بيانات الطبيب في حال كان المستخدم طبيب
   getDoctorData(String nationNum) async{
     QuerySnapshot snapshot = await FirebaseFirestore.instance.collectionGroup("doctors").where("nationNum",isEqualTo: nationNum).limit(1).get();
     data =  snapshot.docs;
@@ -106,24 +113,41 @@ class _SignUpPageState extends State<SignUpPage> {
                     Center(
                       child: MaterialButton(
                         onPressed: ()async{
+
                           if(nationNumKey.currentState!.validate()){
+                            // تصفير حالة التحقق السابقة
+                            isSigned = false;
+                            isPatient = false;
+                            isDoc = false;
+                            haveEmail = false;
+                            isEnabled = false;
+                            data.clear();
+                            //عند الضغط عليه سيتم تفعيل تابع جلب بيانات المريض
                             await getPatientData(id.text);
+                            //في حال كان يوجد بيانات فهو مريض وتم تسجيله بالتطبيق
                             if(data.isNotEmpty){
                               isSigned = true;
+                              isPatient = true;
+                              //الآن يتم اختبار فيما إذا كان قد أضاف إيميل مسبقا
                               if(data[0]["UID"] != ""){
                                 haveEmail = true;
                               }
                             }else {
+                              //هنا يتم استدعاء تابع جلب بيانات طبيب لأن المستخدم لم يكن مريض
                               await getDoctorData(id.text);
+                              //في حال كان يوجد بيانات فهو طبيب وتم تسجيله بالتطبيق
                               if(data.isNotEmpty){
                                 isSigned = true;
+                                isDoc = true;
+                                //الآن يتم اختبار فيما إذا كان قد أضاف إيميل مسبقا
                                 if(data[0]["UID"] != ""){
                                   haveEmail = true;
                                 }
                               }
                             }
-
+                            //بعد اختبار المستخدم في حال كان غير مسجل بالتطبيق سيتم إظهار رسالة توضيحية بذلك
                             if(isSigned == false){
+                              //الرسالة
                               AwesomeDialog(
                                 context: context,
                                 title: "يجب ان تكون قد أنشأت حساب من قبل راجع المستوصف لإنشاء حساب",
@@ -135,6 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               id.text = "";
                               return;
                             }
+                            //إذا وصلنا لهنا فهو مسجل
                             //هنا سيتم التأكد إذا كان هذا الuser قد قام بإضافة ايميل مسبقا
                             if(haveEmail){
                                 //في حال كان لديه ايميل سيظهر dialog يوضح الخظأ
@@ -160,8 +185,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                 });
                                 return;
                             }
-
+                            //إذا وصلنا لهنا فهو مسجل و لا يملك إيميل
                               setState(() {
+                                //سيتم تغيير قيمة isEnabled لفتح الحقول
                                 isEnabled = true;
                               });
 
@@ -183,6 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     SizedBox(height: 20,),
+                    //حقول إضافة الإيميل
                     Form(
                       key: emailAndPassKey,
                       child: Column(
@@ -252,6 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     //زر إنشاء الحساب
                     Center(
                       child: MaterialButton(
+                        //في حال لم يتم التحقق من وجود المستخدم وصحة بياناته سيكون هذا الور غير فعال
                         onPressed: isEnabled ? () async{
                           if(emailAndPassKey.currentState!.validate()){
                             try {
@@ -261,20 +289,42 @@ class _SignUpPageState extends State<SignUpPage> {
                                 password: password.text,
 
                               );
-                              //بعدها سننتقل للصفحة الرئيسية
-                              Navigator.of(context).pushNamedAndRemoveUntil("loginPage", (route) => false);
-                              final doctor = await FirebaseFirestore.instance.collectionGroup("doctors").where("nationNum",isEqualTo: id.text).limit(1).get();
-                              final patient = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: id.text).limit(1).get();
-                              //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
-                              if(patient.docs.isNotEmpty){
-                              await patient.docs.first.reference.update({
-                                "UID" : FirebaseAuth.instance.currentUser!.uid
-                              });}
-                              else if(doctor.docs.isNotEmpty){
+                              //في حال كان المستخدم مريض
+                              if(isPatient){
+                                //أولا يتم جلب الcollections الخاصة بالمريض بكل المستوصفات
+                                final patients = await FirebaseFirestore.instance.collectionGroup("patients").where("nationNum",isEqualTo: id.text).get();
+                                //بعد ذلك ستتم إضافة الuser ID الخاص بحسابه لقاعدة بيانات المرضى
+                                for(final patient in patients.docs){
+                                  await patient.reference.update({
+                                    "UID" : credential.user!.uid,
+                                  });
+                                }
+                                if (!mounted) return;
+                                //بعد ذلك يتم الانتقال لصفحة تسجيل الدخول
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  "loginPage",
+                                      (route) => false,
+                                );
+                                return;
+                              }
+                              //في حال كان المستخدم طبيب
+                              if(isDoc){
+                                //أولا يتم جلب بيانات الطبيب
+                                final doctor = await FirebaseFirestore.instance.collectionGroup("doctors").where("nationNum",isEqualTo: id.text).limit(1).get();
+                                //بعد ذلك يتم إضافة الuser ID لبيانات الطبيب
                                 await doctor.docs.first.reference.update({
                                   "UID" : FirebaseAuth.instance.currentUser!.uid
-                                });}
-                              else{
+                                });
+                                if (!mounted) return;
+                                //بعد ذلك يتم الانتقال لصفحة تسجيل الدخول
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  "loginPage",
+                                      (route) => false,
+                                );
+                                return;
+                              }
+
+                              //إذا وصلنا لهنا فهناك خطأ قد حصل أثناء جلب البيانات
                                 AwesomeDialog(
                                     context: context,
                                     title: "خطأ ",
@@ -282,9 +332,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                     animType: AnimType.rightSlide,
                                     dialogType: DialogType.error
                                 ).show();
-                              }
+
 
                             } on FirebaseAuthException catch (e) {
+                              //في حال كانت كلمة المرور ضعيفة ستظهر رسالة توضيحية بذلك
                               if (e.code == 'weak-password') {
                                 AwesomeDialog(
                                   context: context,
@@ -293,6 +344,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   animType: AnimType.rightSlide,
                                   dialogType: DialogType.error
                                 ).show();
+                                //في حال كان الإيميل موجود مسبقا ضمن قاعدة البيانات ستظهر رسالة توضيحية بذلك
                               } else if (e.code == 'email-already-in-use') {
                                 AwesomeDialog(
                                     context: context,

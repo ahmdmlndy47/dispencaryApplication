@@ -41,6 +41,15 @@ class _PatientsListState extends State<PatientsList> {
         "admins",
         arrayContains: FirebaseAuth.instance.currentUser!.uid)
         .limit(1).get();
+    //في حال لم يتم إيجاد المستوصف لن يتم إظهار أي بيانات
+    if (dispensary.docs.isEmpty) {
+      if (!mounted) return;
+      setState(() {
+        patients.clear();
+        searched = true;
+      });
+      return;
+    }
     //ثانيا يتم حلب المرضى الذين اسمهم يوافق مدخلات البحث
     final ptns = await dispensary.docs.first.reference
         .collection("patients")
@@ -414,6 +423,11 @@ class _PatientsListState extends State<PatientsList> {
                                                           dialogType: DialogType.warning,
                                                           animType: AnimType.rightSlide,
                                                           btnOkOnPress: () async{
+                                                            //في حال هذا المريض يملك موعد سيتم حذف الموعد أيضا
+                                                            final appointment = await patients[index].reference.collection("appointment").limit(1).get();
+                                                            if(appointment.docs.isNotEmpty){
+                                                             await appointment.docs.first.reference.delete();
+                                                            }
                                                             await patients[index].reference.delete();
                                                           },
                                                           btnCancelOnPress: (){
@@ -450,25 +464,29 @@ class _PatientsListState extends State<PatientsList> {
                                                                     .warning,
                                                                 animType: AnimType
                                                                     .rightSlide,
-                                                                btnOkOnPress: () {
-                                                                  if(isAgeEnabled){
-                                                                    patients[index].reference.update(
-                                                                        {
-                                                                          "age" : controllers[index]["ageController"].text
-                                                                        });
+                                                                btnOkOnPress: () async{
+                                                                  final Map<String, dynamic> updates = {};
+
+                                                                  if (isAgeEnabled) {
+                                                                    updates["age"] =
+                                                                        controllers[index]["ageController"].text;
                                                                   }
-                                                                  if(isNationNumEnabled){
-                                                                    patients[index].reference.update(
-                                                                        {
-                                                                          "nationNum" : controllers[index]["nationNumController"].text
-                                                                        });
+
+                                                                  if (isNationNumEnabled) {
+                                                                    updates["nationNum"] =
+                                                                        controllers[index]["nationNumController"].text;
                                                                   }
-                                                                  if(isPhoneEnabled){
-                                                                    patients[index].reference.update(
-                                                                        {
-                                                                          "phone" : controllers[index]["phoneController"].text
-                                                                        });
+
+                                                                  if (isPhoneEnabled) {
+                                                                    updates["phone"] =
+                                                                        controllers[index]["phoneController"].text;
                                                                   }
+
+                                                                  if (updates.isNotEmpty) {
+                                                                    await patients[index].reference.update(updates);
+                                                                  }
+
+                                                                  if (!mounted) return;
                                                                   ScaffoldMessenger
                                                                       .of(
                                                                       parentContext)

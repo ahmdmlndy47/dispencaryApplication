@@ -205,8 +205,19 @@ class _HomeContentState extends State<HomeContent> {
                 .doc(widget.disId).collection("patients")
                 .where("UID",isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                 .limit(1).get();
+            //في حال لم يتم إيجاد المريض بالمستوصف ستظهر رسالة توضيحية
+            if (patient.docs.isEmpty) {
+              AwesomeDialog(
+                context: parentContext,
+                title: "خطأ",
+                desc: "هذا المريض غير مسجل في هذا المستوصف",
+                dialogType: DialogType.error,
+              ).show();
+              return;
+            }
+            final patientDoc = patient.docs.first;
             //في حال كان المريض يملك موعد لن يتمكن من حجز موعد آخر وسيتم إظهار رسالة توضيحية
-            if(patient.docs.first["hasAppoint"]){
+            if(patientDoc["hasAppoint"]){
             //الرسالة
             AwesomeDialog(
             context: parentContext,
@@ -219,7 +230,7 @@ class _HomeContentState extends State<HomeContent> {
             ).show();
             }
             //لن يتمكن المريض أيضا من الحجز في حال تم حظره وسيتم إظهلر رساة توضيحية
-            else if(!patient.docs.first["available"]){
+            else if(!patientDoc["available"]){
             //الرسالة
             AwesomeDialog(
             context: parentContext,
@@ -231,23 +242,29 @@ class _HomeContentState extends State<HomeContent> {
             )
             ).show();
             }else{
+              //متغير يعبر عن عدد المرضى الحالي في العيادة
+              final currentPatientNum =
+              clinics.data!.docs[index]["patientNum"] as int;
+              //متغير يعبر عن رقم الموعد الذي حجزه المريض
+              final newAppointNum = currentPatientNum + 1;
             //عند نجاح الحجز سيتم التعديل على بيانات المريض لجعله يمتلك موعد
-            patient.docs.first.reference.update(
+           await patientDoc.reference.update(
             {
             "hasAppoint" : true
             });
             //وسيتم إضافة واحد لعدد المرضى بالعيادة
-            clinics.data!.docs[index].reference.update(
+            await clinics.data!.docs[index].reference.update(
             {"patientNum" : FieldValue.increment(1)});
             //عند التأكيد سيتم إضافة الموعد لبيانات المريض
-            await patient.docs.first.reference.collection("appointment").add({
+            await patientDoc.reference.collection("appointment").add({
               "countryId" : widget.countryId,
             "patientId" : patient.docs.first["nationNum"],
             "appointClinic" : clinics.data!.docs[index]["clinicName"],
             "appointDis" : widget.disName,
-            "appointNum" : clinics.data!.docs[index]["patientNum"]+1,
+            "appointNum" : newAppointNum,
             "disId" : widget.disId,
             "patientName" : "${patient.docs.first["firstName"]} ${patient.docs.first["lastName"]}",
+              "UID" : FirebaseAuth.instance.currentUser!.uid
             });
             messenger.showSnackBar(
             SnackBar(
