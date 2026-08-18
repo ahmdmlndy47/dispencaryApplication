@@ -211,35 +211,6 @@ class _AddPatientPageState extends State<AddDoctorPage> {
                       }
                     }
                 ),
-                // Directionality(
-                //   textDirection: TextDirection.rtl,
-                //   child: DropdownButtonFormField(
-                //       decoration: InputDecoration(
-                //         filled: true,
-                //         fillColor: Colors.blue[50],
-                //         prefixIcon: Icon(Icons.medical_information),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(40),
-                //           borderSide: BorderSide(color: Colors.grey),
-                //         ),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(40),
-                //           borderSide: BorderSide(color: Colors.grey),
-                //         ),
-                //         hintText: "الاختصاص",
-                //       ),
-                //       items: specialties.map<DropdownMenuItem<String>>((speciality){
-                //         return DropdownMenuItem<String>(
-                //           value: speciality,
-                //           child: Text(speciality),
-                //         );
-                //       }).toList(),
-                //       onChanged: (val){
-                //         setState(() {
-                //           selectedSpeciality = val;
-                //         });
-                //       }),
-                // ),
                 SizedBox(height: 20,),
                 //زر الإضافة
                 MyButton(

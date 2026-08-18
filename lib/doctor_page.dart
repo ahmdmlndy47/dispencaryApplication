@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dispensary/add_record_page.dart';
 import 'package:dispensary/components/main_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -298,6 +299,32 @@ class _DoctorPageState extends State<DoctorPage> {
                         )
                       ],
                     ),
+                  ),
+                  SizedBox(height: 30,),
+                  MyButton(
+                      onPressed: (){
+                        //عند الضغط عليه سننتقل لصفحة إضافة سجل
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddRecordPage(clinicName: clinic["clinicName"])));
+                      },
+                      label: "إضافة سجل طبي لمريض",
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      fontSize: 20,
+                      btnColor: Colors.blueAccent
+                  ),
+                  SizedBox(height: 15,),
+                  MyButton(
+                      onPressed: (){
+                        //عند الضغط عليه سننتقل لصفحة السجلات
+                        Navigator.of(context).pushNamed("recordsListPage");
+                      },
+                      label: "سجلات المرضى",
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      fontSize: 20,
+                      btnColor: Colors.blueAccent
                   )
                 ],
 

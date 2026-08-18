@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dispensary/add_clinic.dart';
 import 'package:dispensary/add_doctor_page.dart';
 import 'package:dispensary/add_patient_page.dart';
+import 'package:dispensary/add_record_page.dart';
 import 'package:dispensary/admin_homepage.dart';
 import 'package:dispensary/countries.dart';
 import 'package:dispensary/doctor_page.dart';
@@ -10,6 +11,7 @@ import 'package:dispensary/homepage.dart';
 import 'package:dispensary/internet_checker.dart';
 import 'package:dispensary/login.dart';
 import 'package:dispensary/patients_list.dart';
+import 'package:dispensary/records_list_page.dart';
 import 'package:dispensary/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -210,7 +212,8 @@ class _MyAppState extends State<MyApp> {
         "doctorsList" : (context) => DoctorsList(),
         "homepage" : (context) => Homepage(),
         "addClinic" : (context) => AddClinic(),
-        "doctorPage" : (context) => DoctorPage()
+        "doctorPage" : (context) => DoctorPage(),
+        "recordsListPage" : (context) => RecordsListPage()
       },
     );
   }

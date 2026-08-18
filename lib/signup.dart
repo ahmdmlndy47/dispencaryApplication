@@ -101,6 +101,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         if(val == ""){
                           return "لا يمكن ترك الحقل فارغا";
                         }
+                        if(val!.contains(new RegExp(r'[a-zA-z]'))){
+                          return "إدخال خاطئ";
+                        }
                       },
                       hint: "أدخل الرمز الوطني",
                       icon: Icon(Icons.perm_identity),
