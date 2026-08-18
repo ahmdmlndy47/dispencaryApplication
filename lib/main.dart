@@ -213,7 +213,6 @@ class _MyAppState extends State<MyApp> {
         "homepage" : (context) => Homepage(),
         "addClinic" : (context) => AddClinic(),
         "doctorPage" : (context) => DoctorPage(),
-        "recordsListPage" : (context) => RecordsListPage()
       },
     );
   }

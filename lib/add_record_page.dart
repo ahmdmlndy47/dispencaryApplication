@@ -381,6 +381,7 @@ class _AddRecordPageState extends State<AddRecordPage> {
                               },
                           ),
                           SizedBox(height: 10,),
+                          //زر إضافة عدد الأدوية
                           MyButton(
                               onPressed: (){
                                 //عند الضغط عليه سيتم تعديل عدد الأدوية لإنشاء حقول لها
@@ -464,12 +465,12 @@ class _AddRecordPageState extends State<AddRecordPage> {
                                 "سجل ${widget.clinicName}" : {
                                   "clinicName" : widget.clinicName,
                                   "doctorName" : "د.${doctor["firstName"]} ${doctor["lastName"]}",
-                                  "visits" : {
+                                  "visits" : [{
                                     "date" : dateController.text,
                                     "symptoms" : symptomsController.text,
                                     "diagnosis" : diagnosisController.text,
                                     "medicines" : medicines,
-                                  }
+                                  }]
                                 }
                               },SetOptions(merge: true));
                               //بعدها يتم إظهار رسالة نجاح

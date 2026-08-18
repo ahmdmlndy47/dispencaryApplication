@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dispensary/add_record_page.dart';
 import 'package:dispensary/components/main_button.dart';
+import 'package:dispensary/records_list_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //صفحة الطبيب الرئيسية
@@ -317,7 +318,8 @@ class _DoctorPageState extends State<DoctorPage> {
                   MyButton(
                       onPressed: (){
                         //عند الضغط عليه سننتقل لصفحة السجلات
-                        Navigator.of(context).pushNamed("recordsListPage");
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecordsListPage(clinicName: clinic["clinicName"])));
+
                       },
                       label: "سجلات المرضى",
                       shape: RoundedRectangleBorder(
