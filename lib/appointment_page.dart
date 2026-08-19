@@ -12,19 +12,148 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
+  //تابع لحساب الوقت المتبقي تقريبا للموعد
+  String calculateRemainingTime(dynamic appointNum) {
+    int number = (appointNum as num).toInt();
+
+    int totalMinutes = number * 10;
+
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
+
+    if (hours > 0 && minutes > 0) {
+      return "متبقي تقريباً $hours ساعة و $minutes دقيقة";
+    } else if (hours > 0) {
+      return "متبقي تقريباً $hours ساعة";
+    } else {
+      return "متبقي تقريباً $minutes دقيقة";
+    }
+  }
   bool _sendNot = false;
-  String? remainingTime;
+  bool _isUpdatingNotification = false;
+  // Stream خاص بمستند الموعد
   late Stream<QuerySnapshot> _appointmentsStream;
+  // Stream خاص بمستند المريض
+  late Stream<QuerySnapshot> _patientStream;
   @override
   void initState() {
     super.initState();
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    // Stream للمواعيد
     _appointmentsStream = FirebaseFirestore.instance
         .collectionGroup("appointment")
         .where(
       "UID",
-      isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+      isEqualTo: uid,
     )
         .snapshots();
+
+    // Stream للمريض
+    _patientStream = FirebaseFirestore.instance
+        .collectionGroup("patients")
+        .where(
+      "UID",
+      isEqualTo: uid,
+    )
+        .limit(1)
+        .snapshots();
+  }
+  // ============================================================
+  // تغيير حالة الإشعارات
+  // ============================================================
+
+  Future<void> changeNotificationSetting(bool value) async {
+    if (_isUpdatingNotification) {
+      return;
+    }
+
+    setState(() {
+      _isUpdatingNotification = true;
+      _sendNot = value;
+    });
+
+    try {
+      final patient = await FirebaseFirestore.instance
+          .collectionGroup("patients")
+          .where(
+        "UID",
+        isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+      )
+          .limit(1)
+          .get();
+
+      if (patient.docs.isEmpty) {
+        if (!mounted) return;
+
+        setState(() {
+          _sendNot = !value;
+          _isUpdatingNotification = false;
+        });
+
+        AwesomeDialog(
+          context: context,
+          title: "خطأ",
+          desc: "لم يتم العثور على بيانات المريض",
+          dialogType: DialogType.error,
+          animType: AnimType.rightSlide,
+          showCloseIcon: true,
+          btnOkText: "حسناً",
+          btnOkOnPress: () {},
+        ).show();
+
+        return;
+      }
+
+      // تحديث sendNot فقط بدون حذف باقي بيانات المريض
+      await patient.docs.first.reference.set(
+        {
+          "sendNot": value,
+        },
+        SetOptions(
+          merge: true,
+        ),
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _isUpdatingNotification = false;
+      });
+
+      AwesomeDialog(
+        context: context,
+        title: value
+            ? "تم تفعيل الإشعارات"
+            : "تم إيقاف الإشعارات",
+        desc: value
+            ? "سيتم إرسال تذكير عند اقتراب دورك"
+            : "لن يتم إرسال إشعارات تذكير",
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        showCloseIcon: true,
+        btnOkText: "حسناً",
+        btnOkOnPress: () {},
+      ).show();
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _sendNot = !value;
+        _isUpdatingNotification = false;
+      });
+
+      AwesomeDialog(
+        context: context,
+        title: "خطأ",
+        desc: "حدث خطأ أثناء تعديل إعداد الإشعارات",
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        showCloseIcon: true,
+        btnOkText: "حسناً",
+        btnOkOnPress: () {},
+      ).show();
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -38,47 +167,125 @@ class _AppointmentPageState extends State<AppointmentPage> {
       body:  ListView(
         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
         children: [
-          //خيار تفعيل إشعار عند اقتراب الدور لخمس أشخاص
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
-              ),
-              margin: EdgeInsets.only(top: 20),
-              elevation: 7,
-              child: SwitchListTile(
-                value: _sendNot,
-                onChanged: (val){
-                  setState(() {
-                    _sendNot = val;
-                  });
-                },
-                //عنوان الخيار
-                title: Text(
-                  "إرسال إشعار تذكير",
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
+          // ========================================================
+          // Stream المريض
+          // ========================================================
+
+          StreamBuilder<QuerySnapshot>(
+            stream: _patientStream,
+            builder: (context, patientSnapshot) {
+
+              if (patientSnapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (patientSnapshot.hasError) {
+                return Center(
+                  child: Text(
+                    "حدث خطأ: ${patientSnapshot.error}",
+                  ),
+                );
+              }
+
+              if (!patientSnapshot.hasData ||
+                  patientSnapshot.data!.docs.isEmpty) {
+                return const SizedBox();
+              }
+
+              // مستند المريض
+              final patient =
+                  patientSnapshot.data!.docs.first;
+
+              // قراءة sendNot
+              final data =
+              patient.data() as Map<String, dynamic>;
+
+              final bool sendNot =
+                  data["sendNot"] ?? false;
+
+              // مزامنة قيمة السويتش مع Firestore
+              if (!_isUpdatingNotification &&
+                  _sendNot != sendNot) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    setState(() {
+                      _sendNot = sendNot;
+                    });
+                  }
+                });
+              }
+
+              // ==================================================
+              // سويتش الإشعارات
+              // ==================================================
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  margin: const EdgeInsets.only(
+                    top: 20,
+                  ),
+                  elevation: 7,
+
+                  child: SwitchListTile(
+                    value: _sendNot,
+
+                    // منع الضغط أثناء تحديث Firestore
+                    onChanged: _isUpdatingNotification
+                        ? null
+                        : (value) {
+                      changeNotificationSetting(
+                        value,
+                      );
+                    },
+
+                    title: const Text(
+                      "إرسال إشعار تذكير",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+
+                    subtitle: const Text(
+                      "عند اقتراب الدور لخمس أشخاص أمامك سيتم إرسال إشعار إليك",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    activeTrackColor:
+                    Colors.blueAccent,
+
+                    inactiveTrackColor:
+                    Colors.grey,
+
+                    thumbColor:
+                    const WidgetStatePropertyAll(
+                      Colors.white,
+                    ),
+
+                    trackOutlineColor:
+                    const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
                   ),
                 ),
-                //توضيح للخيار
-                subtitle: Text(
-                  "عند اقتراب الدور لخمس أشخاص أمامك سيتم إرسال إشعار إليك",
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.grey
-                  ),
-                ),
-                activeTrackColor: Colors.blueAccent,
-                inactiveTrackColor: Colors.grey,
-                thumbColor: WidgetStatePropertyAll(Colors.white),
-                trackOutlineColor: WidgetStatePropertyAll(Colors.transparent),
-              ),
-            ),
+              );
+            },
           ),
+
           SizedBox(height: 30,),
           StreamBuilder(
                   stream: _appointmentsStream,
@@ -242,7 +449,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                           //الوقت المتبقي
                                           Expanded(
                                             child: Text(
-                                              "الوقت المتبقي تقريبا 2ساعة",
+                                              calculateRemainingTime(appointment["appointNum"]),
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 12,
@@ -266,6 +473,27 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                       btnOkText: "نعم",
                                                       btnCancelOnPress: (){},
                                                       btnOkOnPress: ()async{
+                                                        //في حال كان رقم الموعد أقل من أو يساوي خمسة لا يمكن إلغاء الموعد
+                                                        //ويتم إظهار رسالة
+                                                        if(appointment["appointNum"] < 6){
+                                                          AwesomeDialog(
+                                                            context: context,
+                                                            dialogType: DialogType.error,
+                                                            title: "خطأ",
+                                                            desc: "لا يمكن إلغاء الحجز بعد الآن",
+                                                            titleTextStyle: TextStyle(
+                                                              color: Colors.red,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 18
+                                                            ),
+                                                            descTextStyle: TextStyle(
+                                                                color: Colors.redAccent,
+                                                                fontWeight: FontWeight.w500,
+                                                                fontSize: 16
+                                                            )
+                                                          ).show();
+                                                          return;
+                                                        }
                                                         //عند إلغاء الموعد سيتم التعديل على بيانات المريض
                                                         //يتم جعل المريض لا يمتلك موعد
                                                         final patient = await FirebaseFirestore.instance.collection("countries")
@@ -295,6 +523,18 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                                 "patientNum" : FieldValue.increment(-1)
                                                               });
                                                         }
+                                                        //ويتم إنقاص الدور بالمواعيد التي بعده
+                                                        final appoints =
+                                                        await FirebaseFirestore.instance
+                                                            .collectionGroup("appointment")
+                                                            .where("disId",isEqualTo: appointment["disId"])
+                                                            .where("appointClinic",isEqualTo: appointment["appointClinic"])
+                                                            .where("appointNum",isGreaterThan: appointment["appointNum"]).get();
+                                                        if(appoints.docs.isNotEmpty)
+                                                        for(int i=0;i<appoints.docs.length;i++){
+                                                         await appoints.docs[i].reference.update({"appointNum" : FieldValue.increment(-1)});
+                                                        }
+
                                                         //يتم حذف الموعد
                                                         await appointment.reference.delete();
 

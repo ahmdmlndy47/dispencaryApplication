@@ -68,6 +68,19 @@ class _RecordPageState extends State<RecordPage> {
     diagnosisController = TextEditingController();
   }
   @override
+  void dispose() {
+    medicinesNumController.dispose();
+    dateController.dispose();
+    symptomsController.dispose();
+    diagnosisController.dispose();
+
+    for (var controller in medicinesControllers) {
+      controller.dispose();
+    }
+
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       //عنوان الصفحة
@@ -160,13 +173,39 @@ class _RecordPageState extends State<RecordPage> {
                         );
                       }
                       //عند الوصول لهنا فنحن حصلنا على البيانات دون أخطاء
-                      //أولا نخزن السجل ضمن متغير
-                      final record = patientSnapshot.data!.docs.first["سجل ${widget.clinicName}"];
+                      //أولا نخزن السجلات ضمن مصفوفة
+                      final List<Map<String, dynamic>> records =
+                      patientSnapshot.data!.docs.first["records"] == null
+                          ? []
+                          : List<Map<String, dynamic>>.from(patientSnapshot.data!.docs.first["records"]);
+                      //أولا نخزن index السجل ضمن متغير
+                      final recordIndex = records.indexWhere(
+                            (r) => r.containsKey("سجل ${widget.clinicName}"),
+                      );
+                      //إذا كان ال index يساوي -1 هذا يعني لا يوجد سجل يتم إظهار رسالة توضيحية
+                      if (recordIndex == -1) {
+                        return Center(
+                          child: Text(
+                            "لا يوجد سجل لهذه العيادة",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
+                      }
+                      //الآن يتم تخزين السجل
+                      final record = records[recordIndex];
+
+                      final recordData = Map<String, dynamic>.from(
+                        record["سجل ${widget.clinicName}"],
+                      );
                       //ثم نخزن الزيارات
                       final List<Map<String, dynamic>> visits =
-                      record["visits"] == null
+                      recordData["visits"] == null
                           ? []
-                          : List<Map<String, dynamic>>.from(record["visits"]);
+                          : List<Map<String, dynamic>>.from(recordData["visits"]);
                       //الآن يتم عرض السجل
                       return Column(
                         children: [
@@ -324,7 +363,7 @@ class _RecordPageState extends State<RecordPage> {
                           ),
                           SizedBox(height: 10,),
                           //في حال كان الطبيب يريد الإضافة و السجل موجود سيتم إظهار الحقول
-                          if(wantToAdd && record["visits"] != null) Form(
+                          if(wantToAdd && recordData["visits"] != null) Form(
                             key: visitKey,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -496,23 +535,52 @@ class _RecordPageState extends State<RecordPage> {
                                     onPressed: () async{
                                       if(visitKey.currentState!.validate()){
                                         //الآن سيتم إضافة الزيارة
-                                        final patient =
-                                            patientSnapshot.data!.docs.first;
-                                        final doctorName = record["doctorName"];
+                                        final patient = patientSnapshot.data!.docs.first;
+                                        //أولا تخزين السجلات
+                                        final List<Map<String, dynamic>> records =
+                                        patient["records"] == null
+                                            ? []
+                                            : List<Map<String, dynamic>>.from(patient["records"]);
+                                        //ثانيا جلب سجل العيادة و تخزينها
+                                        final recordIndex = records.indexWhere(
+                                              (r) => r.containsKey("سجل ${widget.clinicName}"),
+                                        );
+
+                                        if (recordIndex == -1) {
+                                          return;
+                                        }
+                                        //جلب معلومات السجل وتخزينها
+                                        final recordData = Map<String, dynamic>.from(
+                                          records[recordIndex]["سجل ${widget.clinicName}"],
+                                        );
+                                        //تخزين مصفوفة الزيارات
+                                        final List<Map<String, dynamic>> visits =
+                                        recordData["visits"] == null
+                                            ? []
+                                            : List<Map<String, dynamic>>.from(recordData["visits"]);
+                                        //إنشاء مصفوفة الأدوية المدخلة
                                         List<String> medicines = [];
                                         for(int i=0;i<medicinesControllers.length;i++){
                                           medicines.add(medicinesControllers[i].text);
                                         }
-                                        await patient.reference.update({
-                                          "سجل ${widget.clinicName}.visits": FieldValue.arrayUnion([
-                                            {
-                                              "date": dateController.text.trim(),
-                                              "symptoms": symptomsController.text.trim(),
-                                              "diagnosis": diagnosisController.text.trim(),
-                                              "medicines": medicines,
-                                            }
-                                          ])
+                                        //إضافة الزيارة لمصفوفة الزيارات المحلية
+                                        visits.add({
+                                          "date": dateController.text.trim(),
+                                          "symptoms": symptomsController.text.trim(),
+                                          "diagnosis": diagnosisController.text.trim(),
+                                          "medicines": medicines,
                                         });
+                                        //التعديل على مصفوفة الزيارات الموجودة ضمن بيانات السجل المخزن
+                                        recordData["visits"] = visits;
+
+                                        records[recordIndex] = {
+                                          "سجل ${widget.clinicName}": recordData,
+                                        };
+                                        //إضافة التعديل في قاعدة البيانات
+                                        await patient.reference.update({
+                                          "records": records,
+                                        });
+                                        if (!mounted) return;
                                         //بعدها يتم إظهار رسالة نجاح
                                         AwesomeDialog(
                                             context: context,

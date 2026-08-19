@@ -36,7 +36,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                       children: [
                         //اسم التطبيق
                         Text(
-                          "Dispensaries",
+                          "mediCenter",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 30,
@@ -65,7 +65,7 @@ class _LogOrSignPageState extends State<LogOrSignPage> {
                             },
                             btnColor: Colors.blueAccent,
                             fontSize: 26,
-                            label: "إضافة إيميل",
+                            label: "إنشاء حساب",
                             shape: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(50),
                                 borderSide: BorderSide(width: 0,color: Colors.transparent)

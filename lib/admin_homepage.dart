@@ -291,7 +291,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                 trailingColor: Colors.red,
                                 onTap: (){
                                   selectedDoc = clinics.data!.docs[index]["docName"];
-                                  final parentContext = context;
+                                  final parentContext = this.context;
                                   //عند الضغط على العيادة سيظهر بوب اب التعديل
                                   showDialog(
                                       context: context,
@@ -422,8 +422,8 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                   //عند الضغط عليه سيتم إظهار dialog لتأكيد الإيقاف
                                                                   AwesomeDialog(
                                                                       context: parentContext,
-                                                                      title: "إيقاف العيادة",
-                                                                      desc: "هل انت متأكد من إيقاف العيادة",
+                                                                      title: "تفعيل العيادة",
+                                                                      desc: "هل انت متأكد من تفعيل العيادة",
                                                                       dialogType: DialogType.warning,
                                                                       animType: AnimType.rightSlide,
                                                                       btnCancelText: "لا",
@@ -544,34 +544,38 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                         Expanded(
                                                           child: TextButton(
                                                               onPressed: (){
+                                                                Navigator.of(dialogContext).pop();
                                                                 //عند الضغط عليه سيظهر ديالوغ لتأكيد التعديل
-                                                                AwesomeDialog(
-                                                                    context: parentContext,
-                                                                    title: "تعديل العيادة",
-                                                                    desc: "هل انت متأكد من التعديل",
-                                                                    dialogType: DialogType.warning,
-                                                                    animType: AnimType.rightSlide,
-                                                                    btnCancelText: "لا",
-                                                                    btnOkText: "نعم",
-                                                                    showCloseIcon: true,
-                                                                    btnCancelOnPress: (){},
-                                                                    btnOkOnPress: ()async{
-                                                                      //عند التأكيد سيتحقق اولا فيما إذا تم اختيار طبيب
-                                                                      if (selectedDoc == null) {
-                                                                        //في حال لم يتم اختيار طبيب سيظهرsnackbar يوضح أنه يجب اختيار طبيب
-                                                                        ScaffoldMessenger.of(parentContext).showSnackBar(
-                                                                          const SnackBar(content: Text("اختر الطبيب أولاً")),
-                                                                        );
-                                                                        return;
+                                                                WidgetsBinding.instance.addPostFrameCallback((_){
+                                                                  if(!mounted) return;
+                                                                  AwesomeDialog(
+                                                                      context: parentContext,
+                                                                      title: "تعديل العيادة",
+                                                                      desc: "هل انت متأكد من التعديل",
+                                                                      dialogType: DialogType.warning,
+                                                                      animType: AnimType.rightSlide,
+                                                                      btnCancelText: "لا",
+                                                                      btnOkText: "نعم",
+                                                                      showCloseIcon: true,
+                                                                      btnCancelOnPress: (){},
+                                                                      btnOkOnPress: ()async{
+                                                                        //عند التأكيد سيتحقق اولا فيما إذا تم اختيار طبيب
+                                                                        if (selectedDoc == null) {
+                                                                          //في حال لم يتم اختيار طبيب سيظهرsnackbar يوضح أنه يجب اختيار طبيب
+                                                                          ScaffoldMessenger.of(this.context).showSnackBar(
+                                                                            const SnackBar(content: Text("اختر الطبيب أولاً")),
+                                                                          );
+                                                                          return;
+                                                                        }
+                                                                        //إذا وصلنا لهنا هذا يعني أنه تم التأكيد وتم اختيار طبيب
+                                                                        //لذلك سيتم تعديل بيانات العيادة للبيانات الجديدة
+                                                                        await clinics.data!.docs[index].reference.update(
+                                                                            {"docName" : selectedDoc});
+                                                                        if(!mounted) return;
                                                                       }
-                                                                      //إذا وصلنا لهنا هذا يعني أنه تم التأكيد وتم اختيار طبيب
-                                                                      //لذلك سيتم تعديل بيانات العيادة للبيانات الجديدة
-                                                                     await clinics.data!.docs[index].reference.update(
-                                                                          {"docName" : selectedDoc});
-                                                                      Navigator.of(dialogContext).pop();
-                                                                     if(!mounted) return;
-                                                                    }
-                                                                ).show();
+                                                                  ).show();
+                                                                }
+                                                                );
                                                               },
                                                               child: Text(
                                                                 "تعديل",
@@ -662,7 +666,7 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                   trailing: "انقر للتعديل",
                                   //عند الضغط عليها سيظهر dialog لحظر المريض بما انه قد تخلف عن موعد
                                   onTap: ()async{
-                                    final parentContext = context;
+                                    final parentContext = this.context;
                                     showDialog(
                                         context: context,
                                         builder: (dialogContext){

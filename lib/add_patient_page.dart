@@ -345,6 +345,7 @@ late TextEditingController nationNumController;
                                                               "hasAppoint": false,
                                                               "available": true,
                                                               "missedAnApp": false,
+                                                              "records" : []
                                                             });
                                                         //ويتم عرض رسالة توضيحية بنجاح الإضافة
                                                         if (!mounted) return;

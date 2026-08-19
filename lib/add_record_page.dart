@@ -55,7 +55,11 @@ class _AddRecordPageState extends State<AddRecordPage> {
         .limit(1).get();
     //إذا حدث خطأ أثناء جلب الطبيب سيتم تغيير قيمة المتغير error
     if(doc.docs.isEmpty){
-      error = true;
+      if (!mounted) return;
+      setState(() {
+        error = true;
+        isLoading = false;
+      });
       return;
     }
     //الحصول على المستوصف
@@ -65,7 +69,11 @@ class _AddRecordPageState extends State<AddRecordPage> {
         .limit(1).get();
     //إذا حدث خطأ أثناء جلب المستوصف سيتم تغيير قيمة المتغير error
     if(dis.docs.isEmpty){
-      error = true;
+      if (!mounted) return;
+      setState(() {
+        error = true;
+        isLoading = false;
+      });
       return;
     }
     doctor = doc.docs.first;
@@ -242,28 +250,34 @@ class _AddRecordPageState extends State<AddRecordPage> {
                         //الآن يتم التحقق فيما إذا كان المريض يملك سجل مسبقا
                         final data = patient.docs.first.data();
                         //إذا كان يملك سجل ستظهر رسالة توضيحية
-                        if(data.containsKey("سجل ${widget.clinicName}") && data["سجل ${widget.clinicName}"] != null){
-                          //الرسالة
+                        final List<Map<String, dynamic>> records =
+                        data["records"] == null
+                            ? []
+                            : List<Map<String, dynamic>>.from(data["records"]);
+
+                        final hasRecord = records.any(
+                              (record) => record.containsKey("سجل ${widget.clinicName}"),
+                        );
+
+                        if (hasRecord) {
                           AwesomeDialog(
-                              context: context,
-                              title : "خطأ",
-                              desc: "هذا المريض يملك سجل",
-                              dialogType: DialogType.error,
-                              titleTextStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.red,
-                              ),
-                              descTextStyle: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.redAccent
-                              )
+                            context: context,
+                            title: "خطأ",
+                            desc: "هذا المريض يملك سجل",
+                            dialogType: DialogType.error,
+                            titleTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.red,
+                            ),
+                            descTextStyle: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.redAccent,
+                            ),
                           ).show();
-                          //و يتم إفراغ الحقل الخاص بالرقم الوطني
-                          setState(() {
-                            nationNumController.clear();
-                          });
+
+                          nationNumController.clear();
                           return;
                         }
                         patientNationNum = nationNumController.text.trim();
@@ -462,7 +476,7 @@ class _AddRecordPageState extends State<AddRecordPage> {
                                 medicines.add(medicinesControllers[i].text);
                               }
                               await patient.docs.first.reference.set({
-                                "سجل ${widget.clinicName}" : {
+                                "records" : FieldValue.arrayUnion([{"سجل ${widget.clinicName}" : {
                                   "clinicName" : widget.clinicName,
                                   "doctorName" : "د.${doctor["firstName"]} ${doctor["lastName"]}",
                                   "visits" : [{
@@ -471,7 +485,7 @@ class _AddRecordPageState extends State<AddRecordPage> {
                                     "diagnosis" : diagnosisController.text,
                                     "medicines" : medicines,
                                   }]
-                                }
+                                }}])
                               },SetOptions(merge: true));
                               //بعدها يتم إظهار رسالة نجاح
                               AwesomeDialog(

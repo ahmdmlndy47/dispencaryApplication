@@ -214,32 +214,44 @@ class _RecordsListPageState extends State<RecordsListPage> {
                   });
                     return;
                 }
-                //الآن يتم التحقق فيما إذا كان المريض لا يملك سجل مسبقا
+                // جلب بيانات المريض
                 final data = patient.docs.first.data();
-                //إذا كان لا يملك سجل ستظهر رسالة توضيحية
-                if(!data.containsKey("سجل ${widget.clinicName}") && data["سجل ${widget.clinicName}"] == null){
-                //الرسالة
-                AwesomeDialog(
-                context: context,
-                title : "خطأ",
-                desc: " هذا المريض لا يملك سجل بهذه العيادة",
-                dialogType: DialogType.error,
-                titleTextStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: Colors.red,
-                ),
-                descTextStyle: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Colors.redAccent
-                )
-                ).show();
-                //و يتم إفراغ الحقل الخاص بالرقم الوطني
-                setState(() {
-                nationNumController.clear();
-                });
-                return;
+
+                // جلب السجلات الموجودة عند المريض
+                final List<Map<String, dynamic>> records =
+                data["records"] == null
+                    ? []
+                    : List<Map<String, dynamic>>.from(data["records"]);
+
+                // التحقق من وجود سجل لهذه العيادة
+                final hasRecord = records.any(
+                      (record) => record.containsKey("سجل ${widget.clinicName}"),
+                );
+
+                // إذا لم يكن لديه سجل بهذه العيادة
+                if (!hasRecord) {
+                  AwesomeDialog(
+                    context: context,
+                    title: "خطأ",
+                    desc: "هذا المريض لا يملك سجل بهذه العيادة",
+                    dialogType: DialogType.error,
+                    titleTextStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.red,
+                    ),
+                    descTextStyle: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.redAccent,
+                    ),
+                  ).show();
+
+                  setState(() {
+                    nationNumController.clear();
+                  });
+
+                  return;
                 }
                 patientNationNum = nationNumController.text.trim();
                 setState(() {

@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dispensary/add_clinic.dart';
 import 'package:dispensary/add_doctor_page.dart';
 import 'package:dispensary/add_patient_page.dart';
-import 'package:dispensary/add_record_page.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dispensary/admin_homepage.dart';
 import 'package:dispensary/countries.dart';
 import 'package:dispensary/doctor_page.dart';
@@ -11,7 +13,6 @@ import 'package:dispensary/homepage.dart';
 import 'package:dispensary/internet_checker.dart';
 import 'package:dispensary/login.dart';
 import 'package:dispensary/patients_list.dart';
-import 'package:dispensary/records_list_page.dart';
 import 'package:dispensary/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +26,46 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
   runApp( MyApp());
+}
+Future<void> saveFcmToken() async {
+  final user = FirebaseAuth.instance.currentUser;
+
+  if (user == null) {
+    return;
+  }
+
+  final token = await FirebaseMessaging.instance.getToken();
+
+  if (token == null) {
+    return;
+  }
+
+  final patient = await FirebaseFirestore.instance
+      .collectionGroup("patients")
+      .where(
+    "UID",
+    isEqualTo: user.uid,
+  )
+      .limit(1)
+      .get();
+
+  if (patient.docs.isNotEmpty) {
+    await patient.docs.first.reference.set(
+      {
+        "fcmToken": token,
+      },
+      SetOptions(
+        merge: true,
+      ),
+    );
+  }
 }
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -69,6 +108,7 @@ class _MyAppState extends State<MyApp> {
       checkingUser = false;
       return;
     }
+    await saveFcmToken();
 
     // المستخدم مسجل دخول
     setState(() {
