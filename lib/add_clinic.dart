@@ -17,10 +17,21 @@ class _AddClinicState extends State<AddClinic> {
   late TextEditingController clinicName;
   List<QueryDocumentSnapshot> doctors = [];
   String? selectedDoc;
+  bool noDoctors = false;
   //تابع جلب الأطباء من أجل السيليكشن الخاصة بالأطباء
   getDoctors() async{
     final dispensary = await FirebaseFirestore.instance.collectionGroup("dispensaries").where("admins",arrayContains: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+    if(dispensary.docs.isEmpty){
+      return;
+    }
     final doctorsSnapshot = await dispensary.docs.first.reference.collection("doctors").get();
+    if(doctorsSnapshot.docs.isEmpty){
+      if(!mounted) return;
+      setState(() {
+        noDoctors = true;
+      });
+      return;
+    }
     doctors = doctorsSnapshot.docs;
     setState(() {});
   }
@@ -68,7 +79,9 @@ class _AddClinicState extends State<AddClinic> {
                   "الطبيب",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
+
                 //السليكشن الخاصة بالأطباء
+                noDoctors ? Text("لا يوجد أطباء حاليا بالمكز يرجى إضافة طبيب أولا") :
                 DropdownButtonFormField(
                   validator: (val){
                     if(val == "" || val == null){
@@ -120,7 +133,7 @@ class _AddClinicState extends State<AddClinic> {
                 SizedBox(height: 10,),
                 //زر الإضافة
                 MyButton(
-                    onPressed: () async{
+                    onPressed: noDoctors ? null : () async{
                       //عند الضغط عليه يتم التحقق أولا من صحة المدخلات
                       if(formKey.currentState!.validate()){
                         // في حال المدخلات صحيحة يتم جلب العيادات
@@ -128,6 +141,27 @@ class _AddClinicState extends State<AddClinic> {
                         final clinics  = await dispensary.docs.first.reference.collection("clinics");
                         //البحث عن عيادة بنفس اسم العيادة الجديدة
                         final exClinic = await clinics.where("clinicName",isEqualTo: clinicName.text).limit(1).get();
+                        //البحث عن عيادة بنفس اسم الطبيب
+                        final sameDocClinic = await clinics.where("docName",isEqualTo: selectedDoc).limit(1).get();
+                        if(sameDocClinic.docs.isNotEmpty){
+                          AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.error,
+                              title: "خطأ",
+                              desc: "الطبيب موجودة ضمن عيادة موجودة مسبقا",
+                              descTextStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.red
+                              ),
+                              titleTextStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                              )
+                          ).show();
+                          return;
+                        }
                         //في حال كان هناك عيادة بنفس الاسم سيتم إظهار dialog لتوضيخ أن العيادة موجودة مسبقا
                         if(exClinic.docs.isNotEmpty){
                           AwesomeDialog(

@@ -568,6 +568,31 @@ class _AdminHomepageState extends State<AdminHomepage> {
                                                                           return;
                                                                         }
                                                                         //إذا وصلنا لهنا هذا يعني أنه تم التأكيد وتم اختيار طبيب
+                                                                        //يتم اختبار إذا الطبيب موجود بغير عيادة
+                                                                        final doctorExistsInAnotherClinic = clinics.data!.docs.any(
+                                                                              (clinic) =>
+                                                                          clinic.id != clinics.data!.docs[index].id &&
+                                                                              clinic["docName"] == selectedDoc,
+                                                                        );
+                                                                        if(doctorExistsInAnotherClinic){
+                                                                          AwesomeDialog(
+                                                                              context: parentContext,
+                                                                              dialogType: DialogType.error,
+                                                                              title: "خطأ",
+                                                                              desc: "الطبيب موجودة ضمن عيادة موجودة مسبقا",
+                                                                              descTextStyle: TextStyle(
+                                                                                  fontWeight: FontWeight.w400,
+                                                                                  fontSize: 16,
+                                                                                  color: Colors.red
+                                                                              ),
+                                                                              titleTextStyle: TextStyle(
+                                                                                  fontSize: 20,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.red
+                                                                              )
+                                                                          ).show();
+                                                                          return;
+                                                                        }
                                                                         //لذلك سيتم تعديل بيانات العيادة للبيانات الجديدة
                                                                         await clinics.data!.docs[index].reference.update(
                                                                             {"docName" : selectedDoc});
